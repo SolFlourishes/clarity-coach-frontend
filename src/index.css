@@ -1,0 +1,15 @@
+    /* Import Google Fonts per Brand Guide */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Merriweather:wght@400;700;900&display=swap');
+
+    /* Tailwind CSS Directives */
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    /* Base body styling */
+    body {
+        background-color: #111827; /* gray-900 */
+        color: #F9FAFB; /* gray-100 */
+        font-family: 'Inter', sans-serif;
+    }
+    
