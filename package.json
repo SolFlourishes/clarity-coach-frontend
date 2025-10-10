@@ -1,21 +1,19 @@
-{
-  "name": "clarity-coach-frontend",
-  "private": true,
-  "version": "3.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@tailwindcss/typography": "^0.5.13",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
-    "tailwindcss": "^3.4.1",
-    "vite": "^5.2.0"
-  }
-}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clarity Coach | Hearthside Works</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- 
+      UPDATED: Changed the script path from an absolute path "/src/main.jsx" 
+      to a relative path "./src/main.jsx". This ensures that the Vercel 
+      build process can correctly locate the entry point of the application.
+    -->
+    <script type="module" src="./src/main.jsx"></script>
+  </body>
+</html>
+
