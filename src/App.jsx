@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 
 // --- Configuration ---
 // UPDATED: This now reads from the environment variable set in Vercel.
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+const API_BASE_URL = rawApiUrl.replace(/\/$/, "");
 
 // --- Main App Component ---
 // This component handles routing and the main layout.
