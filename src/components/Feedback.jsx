@@ -37,11 +37,13 @@ export const Feedback = ({ type, onSubmit, isSuccess }) => {
                 })}
             </div>
             {/* FIX #10: Larger feedback text box */}
-            <textarea
+             <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="How could this be improved?"
-                className="io-textarea text-sm min-h-[100px]"
+                // --- EXISTING: className="io-textarea text-sm min-h-[100px]" ---
+                // --- NEW FIX: Add explicit Tailwind classes for background, text, border, and focus states, including dark mode variants. ---
+                className="w-full text-sm min-h-[100px] p-3 rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800 text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
             />
             <button
                 type="submit"
