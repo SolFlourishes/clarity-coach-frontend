@@ -29,11 +29,10 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     const [feedbackSuccess, setFeedbackSuccess] = useState({ explanation: false, response: false });
     const [loadingMessage, setLoadingMessage] = useState(loadingTips[0]);
     
-    // --- NEW: State for Verbose Mode ---
-    const [originalInputs, setOriginalInputs] = useState(null); // Stores the inputs for the verbose call
+    const [originalInputs, setOriginalInputs] = useState(null);
     const [verboseExplanation, setVerboseExplanation] = useState('');
     const [verboseResponse, setVerboseResponse] = useState('');
-    const [isVerboseLoading, setIsVerboseLoading] = useState(null); // Can be 'explanation' or 'response'
+    const [isVerboseLoading, setIsVerboseLoading] = useState(null);
 
     const isDraftMode = mode === 'draft';
     
@@ -59,7 +58,6 @@ export const TranslatePage = ({ mode = 'draft' }) => {
         setError(null); 
         setAiResponse(null); 
         setFeedbackSuccess({ explanation: false, response: false });
-        // --- NEW: Reset verbose content on new translation ---
         setVerboseExplanation('');
         setVerboseResponse('');
         setOriginalInputs(null);
@@ -75,47 +73,31 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                 finalSenderStyle = data.style;
             }
             const requestBody = { mode, text, context, interpretation, analyzeContext, sender: finalSenderStyle, receiver: receiverStyle, senderNeurotype, receiverNeurotype, senderGeneration, receiverGeneration };
-            
-            // --- NEW: Store the original inputs for verbose calls ---
             setOriginalInputs(requestBody);
-
             const transRes = await fetch(`${API_BASE_URL}/api/translate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
             if (!transRes.ok) { const errData = await transRes.json(); throw new Error(errData.error || 'An error occurred during translation.'); }
             const data = await transRes.json();
             setAiResponse(data);
         } catch (err) { setError(err.message); } finally { setLoading(false); }
     };
-
-    // --- NEW: Function to handle fetching verbose content ---
+    
     const handleVerboseClick = async (target, generatedText) => {
         if (!originalInputs) {
             setError("Cannot fetch details because the original context is missing.");
             return;
         }
-        setIsVerboseLoading(target); // Show spinner for the correct section
+        setIsVerboseLoading(target);
         setError(null);
-
         try {
             const res = await fetch(`${API_BASE_URL}/api/verbose`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    target: target, // 'explanation' or 'response'
-                    originalInputs: originalInputs,
-                    generatedText: generatedText
-                }),
+                body: JSON.stringify({ target, originalInputs, generatedText }),
             });
             const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || 'Failed to get verbose details.');
-            }
-
-            if (target === 'explanation') {
-                setVerboseExplanation(data.verboseContent);
-            } else {
-                setVerboseResponse(data.verboseContent);
-            }
+            if (!res.ok) throw new Error(data.error || 'Failed to get verbose details.');
+            if (target === 'explanation') setVerboseExplanation(data.verboseContent);
+            else setVerboseResponse(data.verboseContent);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -125,7 +107,6 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     
     const handleReset = () => { 
         setText(''); setContext(''); setInterpretation(''); setAnalyzeContext(''); setError(null); setAiResponse(null); setFeedbackSuccess({ explanation: false, response: false }); setIsAdvancedMode(false); setSenderStyle('let-ai-decide'); setReceiverStyle('indirect'); setSenderNeurotype('Unsure'); setReceiverNeurotype('Unsure'); setSenderGeneration('unsure'); setReceiverGeneration('unsure');
-        // --- NEW: Reset verbose state on full reset ---
         setVerboseExplanation(''); setVerboseResponse(''); setOriginalInputs(null); setIsVerboseLoading(null);
     };
     
@@ -144,7 +125,6 @@ export const TranslatePage = ({ mode = 'draft' }) => {
         <p className="text-gray-500 dark:text-gray-400 max-w-3xl mx-auto text-center mb-8">{isDraftMode ? "Clearly defining your intent helps the AI create a more accurate translation." : "Explaining the situation and your interpretation helps the AI understand the communication gap."}</p>
         
         <form onSubmit={handleSubmit} className="space-y-8">
-            {/* ... Your form content (unchanged) ... */}
             <div className={`grid gap-6 ${isDraftMode ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
                 {isDraftMode ? (
                     <>
@@ -161,7 +141,8 @@ export const TranslatePage = ({ mode = 'draft' }) => {
             </div>
 
             <div className="p-6 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 {/* This section is unchanged */}
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <SelectorGroup label="My Communication Style" tooltip="Direct: You say what you mean. Indirect: You use context and subtext."><RadioPillGroup name="sender" value={senderStyle} onChange={setSenderStyle} options={['direct', 'indirect', 'let-ai-decide']} /></SelectorGroup>
                     <SelectorGroup label="Audience's Style"><RadioPillGroup name="receiver" value={receiverStyle} onChange={setReceiverStyle} options={['direct', 'indirect']} /></SelectorGroup>
                 </div>
@@ -194,10 +175,14 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                     </h3>
                     <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow" dangerouslySetInnerHTML={{ __html: aiResponse.explanation }} />
 
-                    {/* --- NEW: Verbose Button and Display for Explanation --- */}
+                    {/* --- FIX: Added tooltip and corrected disabled logic --- */}
                     {!verboseExplanation && (
-                        <button onClick={() => handleVerboseClick('explanation', aiResponse.explanation)} disabled={isVerboseLoading}
-                            className="text-sm text-teal-600 dark:text-teal-400 hover:underline mt-4 disabled:opacity-50">
+                        <button 
+                            onClick={() => handleVerboseClick('explanation', aiResponse.explanation)} 
+                            disabled={!!isVerboseLoading}
+                            className="text-sm text-teal-600 dark:text-teal-400 hover:underline mt-4 disabled:opacity-50"
+                            title="Get a more detailed, educational breakdown of this analysis."
+                        >
                             {isVerboseLoading === 'explanation' ? 'Loading...' : 'Learn More'}
                         </button>
                     )}
@@ -216,10 +201,14 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                     </h3>
                     <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow" dangerouslySetInnerHTML={{ __html: aiResponse.response }} />
                     
-                    {/* --- NEW: Verbose Button and Display for Response --- */}
+                    {/* --- FIX: Added tooltip and corrected disabled logic --- */}
                     {!verboseResponse && (
-                        <button onClick={() => handleVerboseClick('response', aiResponse.response)} disabled={isVerboseLoading}
-                            className="text-sm text-teal-600 dark:text-teal-400 hover:underline mt-4 disabled:opacity-50">
+                        <button 
+                            onClick={() => handleVerboseClick('response', aiResponse.response)} 
+                            disabled={!!isVerboseLoading}
+                            className="text-sm text-teal-600 dark:text-teal-400 hover:underline mt-4 disabled:opacity-50"
+                            title="Get a breakdown of why this rewritten version is more effective."
+                        >
                             {isVerboseLoading === 'response' ? 'Loading...' : 'Learn More'}
                         </button>
                     )}
