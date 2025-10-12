@@ -101,6 +101,7 @@ export const ChangeLogPage = () => (
                 <li><strong>Major Architectural Restructure:</strong> Migrated backend from Vercel Serverless to a dedicated Node.js server on Google Cloud Run to ensure stability and eliminate streaming errors.</li>
                 <li><strong>Complete UI/UX Redesign:</strong> Rebuilt the entire frontend with Tailwind CSS to align with the Hearthside Works brand guide, improving aesthetics, accessibility, and responsiveness.</li>
                 <li><strong>Component Refactor:</strong> Broke the monolithic App.jsx into individual, manageable component files for clarity and maintainability.</li>
+                 <li><strong>New Feature - Verbose Mode:</strong> Added a "Learn More" option to translation results, providing users with a deeper, educational breakdown of the AI's reasoning and specific word choices.</li>
                 <li>Re-implemented all features from Beta 2.1, including Translate, Analyze, Chat, advanced selectors, and feedback systems.</li>
             </ul>
         </div>
