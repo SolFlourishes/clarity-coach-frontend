@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Feedback } from './Feedback';
-import { Copy, Check } from 'lucide-react'; // --- NEW: Import icons ---
+import { Copy, Check, Edit, Save, X, RefreshCw } from 'lucide-react'; // --- NEW: More icons for new buttons ---
 
 const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 const API_BASE_URL = rawApiUrl.replace(/\/$/, "");
@@ -10,9 +10,9 @@ const loadingTips = [
 ];
 
 export const TranslatePage = ({ mode = 'draft' }) => {
+    // (Existing state variables are unchanged)
     const generations = ['Boomer', 'Gen X', 'Xennial', 'Millennial', 'Gen Z', 'Gen Alpha', 'unsure'];
     const neurotypes = ['Autism', 'ADHD', 'Neurotypical', 'Unsure'];
-
     const [isAdvancedMode, setIsAdvancedMode] = useState(false);
     const [senderStyle, setSenderStyle] = useState('let-ai-decide');
     const [receiverStyle, setReceiverStyle] = useState('indirect');
@@ -29,12 +29,20 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     const [aiResponse, setAiResponse] = useState(null);
     const [feedbackSuccess, setFeedbackSuccess] = useState({ explanation: false, response: false });
     const [loadingMessage, setLoadingMessage] = useState(loadingTips[0]);
-    
     const [originalInputs, setOriginalInputs] = useState(null);
     const [verboseExplanation, setVerboseExplanation] = useState('');
     const [verboseResponse, setVerboseResponse] = useState('');
     const [isVerboseLoading, setIsVerboseLoading] = useState(null);
 
+    // --- NEW: State for Golden Feedback Loop ---
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedResponse, setEditedResponse] = useState('');
+    const [isSavingEdit, setIsSavingEdit] = useState(false);
+    const [editSaveSuccess, setEditSaveSuccess] = useState(false);
+    const [isReanalyzing, setIsReanalyzing] = useState(false);
+    const [reanalysisResult, setReanalysisResult] = useState(null);
+    const editableDivRef = useRef(null);
+    
     const isDraftMode = mode === 'draft';
     
     useEffect(() => { handleReset(); }, [mode]);
@@ -53,16 +61,17 @@ export const TranslatePage = ({ mode = 'draft' }) => {
         return () => clearInterval(interval);
     }, [loading]);
 
+    // This effect focuses the editable div when editing starts
+    useEffect(() => {
+        if (isEditing && editableDivRef.current) {
+            editableDivRef.current.focus();
+        }
+    }, [isEditing]);
+    
     const handleSubmit = async (event) => {
         event.preventDefault(); 
+        handleReset(); // Full reset before a new translation
         setLoading(true); 
-        setError(null); 
-        setAiResponse(null); 
-        setFeedbackSuccess({ explanation: false, response: false });
-        setVerboseExplanation('');
-        setVerboseResponse('');
-        setOriginalInputs(null);
-
         try {
             let finalSenderStyle = senderStyle;
             if (senderStyle === 'let-ai-decide') {
@@ -83,32 +92,75 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     };
     
     const handleVerboseClick = async (target, generatedText) => {
-        if (!originalInputs) {
-            setError("Cannot fetch details because the original context is missing.");
-            return;
-        }
-        setIsVerboseLoading(target);
-        setError(null);
+        if (!originalInputs) { setError("Cannot fetch details because the original context is missing."); return; }
+        setIsVerboseLoading(target); setError(null);
         try {
-            const res = await fetch(`${API_BASE_URL}/api/verbose`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ target, originalInputs, generatedText }),
-            });
+            const res = await fetch(`${API_BASE_URL}/api/verbose`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ target, originalInputs, generatedText }), });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Failed to get verbose details.');
-            if (target === 'explanation') setVerboseExplanation(data.verboseContent);
-            else setVerboseResponse(data.verboseContent);
+            if (target === 'explanation') setVerboseExplanation(data.verboseContent); else setVerboseResponse(data.verboseContent);
+        } catch (err) { setError(err.message); } finally { setIsVerboseLoading(null); }
+    };
+    
+    // --- NEW: Handlers for the Golden Feedback Loop ---
+    const handleEditClick = () => {
+        setEditedResponse(aiResponse.response);
+        setIsEditing(true);
+        setEditSaveSuccess(false); // Reset success message
+        setReanalysisResult(null); // Clear previous re-analysis
+    };
+
+    const handleSaveEdit = async () => {
+        setIsSavingEdit(true);
+        setError(null);
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/feedback/edit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    originalInputs, 
+                    originalResponse: aiResponse.response,
+                    editedResponse,
+                }),
+            });
+            if (!res.ok) throw new Error('Failed to save your edit.');
+            setEditSaveSuccess(true);
         } catch (err) {
             setError(err.message);
         } finally {
-            setIsVerboseLoading(null);
+            setIsSavingEdit(false);
         }
     };
-    
+
+    const handleReanalyzeClick = async () => {
+        setIsReanalyzing(true);
+        setError(null);
+        setReanalysisResult(null);
+        try {
+            // We re-use the 'analyze' mode of the main translate endpoint for this
+            const requestBody = { 
+                ...originalInputs, 
+                mode: 'analyze', // Force analyze mode
+                text: editedResponse, // Use the user's edited text as the new message to analyze
+                analyzeContext: `The user edited the AI's suggestion. Analyze their new version for clarity and potential misinterpretations based on the original sender/receiver profiles. Original AI suggestion was: "${aiResponse.response}"`,
+                interpretation: 'How does my new version sound?'
+            };
+            const res = await fetch(`${API_BASE_URL}/api/translate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
+            if (!res.ok) { const errData = await res.json(); throw new Error(errData.error || 'Failed to re-analyze.'); }
+            const data = await res.json();
+            setReanalysisResult(data.explanation); // We only care about the new explanation
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsReanalyzing(false);
+        }
+    };
+
     const handleReset = () => { 
         setText(''); setContext(''); setInterpretation(''); setAnalyzeContext(''); setError(null); setAiResponse(null); setFeedbackSuccess({ explanation: false, response: false }); setIsAdvancedMode(false); setSenderStyle('let-ai-decide'); setReceiverStyle('indirect'); setSenderNeurotype('Unsure'); setReceiverNeurotype('Unsure'); setSenderGeneration('unsure'); setReceiverGeneration('unsure');
         setVerboseExplanation(''); setVerboseResponse(''); setOriginalInputs(null); setIsVerboseLoading(null);
+        // --- NEW: Reset Golden Loop state ---
+        setIsEditing(false); setEditedResponse(''); setIsSavingEdit(false); setEditSaveSuccess(false); setIsReanalyzing(false); setReanalysisResult(null);
     };
     
     const handleFeedbackSubmit = async (feedbackData, type) => {
@@ -125,6 +177,7 @@ export const TranslatePage = ({ mode = 'draft' }) => {
         <h1 className="text-3xl md:text-4xl font-bold font-serif mb-2 text-center">{isDraftMode ? 'Draft a Message' : 'Analyze a Message'}</h1>
         <p className="text-gray-500 dark:text-gray-400 max-w-3xl mx-auto text-center mb-8">{isDraftMode ? "Clearly defining your intent helps the AI create a more accurate translation." : "Explaining the situation and your interpretation helps the AI understand the communication gap."}</p>
         
+        {/* The main form is unchanged */}
         <form onSubmit={handleSubmit} className="space-y-8">
             <div className={`grid gap-6 ${isDraftMode ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
                 {isDraftMode ? (
@@ -140,7 +193,6 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                     </>
                 )}
             </div>
-
             <div className="p-6 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <SelectorGroup label="My Communication Style" tooltip="Direct: You say what you mean. Indirect: You use context and subtext."><RadioPillGroup name="sender" value={senderStyle} onChange={setSenderStyle} options={['direct', 'indirect', 'let-ai-decide']} /></SelectorGroup>
@@ -156,7 +208,6 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                     </div>
                 )}
             </div>
-
             <div className="flex justify-center items-center gap-4">
                  <button type="submit" className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 disabled:bg-gray-500 dark:disabled:bg-gray-600 disabled:cursor-not-allowed disabled:transform-none" disabled={loading}>
                      {loading ? ( <span className="flex items-center gap-2"> <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> {loadingMessage} </span> ) : 'Translate'}
@@ -171,45 +222,56 @@ export const TranslatePage = ({ mode = 'draft' }) => {
             <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="relative bg-gray-100 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col">
                     <CopyButton textToCopy={aiResponse.explanation} />
-                    <h3 className="text-lg font-bold font-serif text-teal-600 dark:text-teal-400 mb-2">
-                        {isDraftMode ? "How They Might Hear It (Explanation)" : "What They Likely Meant (Explanation)"}
-                    </h3>
+                    <h3 className="text-lg font-bold font-serif text-teal-600 dark:text-teal-400 mb-2">{isDraftMode ? "How They Might Hear It (Explanation)" : "What They Likely Meant (Explanation)"}</h3>
                     <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow" dangerouslySetInnerHTML={{ __html: aiResponse.explanation }} />
-                    {!verboseExplanation && (
-                        <button onClick={() => handleVerboseClick('explanation', aiResponse.explanation)} disabled={!!isVerboseLoading}
-                            className="text-sm text-teal-600 dark:text-teal-400 hover:underline mt-4 disabled:opacity-50"
-                            title="Get a more detailed, educational breakdown of this analysis.">
-                            {isVerboseLoading === 'explanation' ? 'Loading...' : 'Learn More'}
-                        </button>
-                    )}
-                    {verboseExplanation && (
-                        <div className="mt-4 p-4 bg-gray-200 dark:bg-gray-900/70 rounded-lg">
-                            <h4 className="font-bold text-terracotta-500 dark:text-terracotta-400 mb-2">Deeper Dive</h4>
-                            <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: verboseExplanation }} />
-                        </div>
-                    )}
+                    {!verboseExplanation && ( <button onClick={() => handleVerboseClick('explanation', aiResponse.explanation)} disabled={!!isVerboseLoading} className="text-sm text-teal-600 dark:text-teal-400 hover:underline mt-4 disabled:opacity-50" title="Get a more detailed, educational breakdown of this analysis."> {isVerboseLoading === 'explanation' ? 'Loading...' : 'Learn More'} </button> )}
+                    {verboseExplanation && ( <div className="mt-4 p-4 bg-gray-200 dark:bg-gray-900/70 rounded-lg"> <h4 className="font-bold text-terracotta-500 dark:text-terracotta-400 mb-2">Deeper Dive</h4> <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: verboseExplanation }} /> </div> )}
                     <Feedback type="explanation" onSubmit={(data) => handleFeedbackSubmit(data, 'explanation')} isSuccess={feedbackSuccess.explanation} />
                 </div>
+
                 <div className="relative bg-gray-100 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col">
-                    <CopyButton textToCopy={aiResponse.response} />
-                    <h3 className="text-lg font-bold font-serif text-teal-600 dark:text-teal-400 mb-2">
-                        {isDraftMode ? "The Translation (Suggested Draft)" : "The Translation (Suggested Response)"}
-                    </h3>
-                    <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow" dangerouslySetInnerHTML={{ __html: aiResponse.response }} />
-                    {!verboseResponse && (
-                        <button onClick={() => handleVerboseClick('response', aiResponse.response)} disabled={!!isVerboseLoading}
-                            className="text-sm text-teal-600 dark:text-teal-400 hover:underline mt-4 disabled:opacity-50"
-                            title="Get a breakdown of why this rewritten version is more effective.">
-                            {isVerboseLoading === 'response' ? 'Loading...' : 'Learn More'}
-                        </button>
-                    )}
-                    {verboseResponse && (
+                    <CopyButton textToCopy={isEditing ? editedResponse : aiResponse.response} />
+                    <h3 className="text-lg font-bold font-serif text-teal-600 dark:text-teal-400 mb-2">{isDraftMode ? "The Translation (Suggested Draft)" : "The Translation (Suggested Response)"}</h3>
+                    
+                    {/* --- NEW: Conditional rendering for Edit Mode --- */}
+                    <div 
+                        ref={editableDivRef}
+                        contentEditable={isEditing}
+                        suppressContentEditableWarning={true}
+                        onInput={e => setEditedResponse(e.currentTarget.innerHTML)}
+                        className={`prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow ${isEditing ? 'p-2 ring-2 ring-teal-500 rounded-md bg-white dark:bg-gray-900' : ''}`}
+                        dangerouslySetInnerHTML={{ __html: isEditing ? editedResponse : aiResponse.response }} 
+                    />
+
+                    <div className="mt-4 flex flex-wrap gap-2 items-center">
+                        {!isEditing ? (
+                            <button onClick={handleEditClick} className="flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:underline">
+                                <Edit className="h-4 w-4" /> Edit this translation
+                            </button>
+                        ) : (
+                            <>
+                                <button onClick={handleSaveEdit} disabled={isSavingEdit} className="flex items-center gap-1 text-sm px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-500">
+                                    <Save className="h-4 w-4" /> {isSavingEdit ? 'Saving...' : 'Save'}
+                                </button>
+                                <button onClick={() => setIsEditing(false)} className="flex items-center gap-1 text-sm px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600">
+                                    <X className="h-4 w-4" /> Cancel
+                                </button>
+                                <button onClick={handleReanalyzeClick} disabled={isReanalyzing} className="flex items-center gap-1 text-sm text-purple-600 dark:text-purple-400 hover:underline">
+                                    <RefreshCw className={`h-4 w-4 ${isReanalyzing ? 'animate-spin' : ''}`} /> {isReanalyzing ? 'Analyzing...' : 'Re-analyze My Edit'}
+                                </button>
+                            </>
+                        )}
+                    </div>
+                    {editSaveSuccess && <p className="text-sm text-green-600 dark:text-green-400 mt-2">Thank you! Your feedback will help improve the AI.</p>}
+
+                    {reanalysisResult && (
                          <div className="mt-4 p-4 bg-gray-200 dark:bg-gray-900/70 rounded-lg">
-                            <h4 className="font-bold text-terracotta-500 dark:text-terracotta-400 mb-2">Why This Works</h4>
-                           <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: verboseResponse }} />
+                            <h4 className="font-bold text-terracotta-500 dark:text-terracotta-400 mb-2">Analysis of Your Edit</h4>
+                           <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: reanalysisResult }} />
                         </div>
                     )}
-                    <Feedback type="response" onSubmit={(data) => handleFeedbackSubmit(data, 'response')} isSuccess={feedbackSuccess.response} />
+                    
+                    {!isEditing && <Feedback type="response" onSubmit={(data) => handleFeedbackSubmit(data, 'response')} isSuccess={feedbackSuccess.response} />}
                 </div>
             </div>
         )}
@@ -217,10 +279,10 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     );
 };
 
-// --- NEW: Copy Button Helper Component ---
+// --- Helper Components (CopyButton added, IOBox modified) ---
+
 const CopyButton = ({ textToCopy }) => {
     const [isCopied, setIsCopied] = useState(false);
-
     const handleCopy = () => {
         const stripHtml = (html) => {
             if (!html) return '';
@@ -228,29 +290,21 @@ const CopyButton = ({ textToCopy }) => {
             return doc.body.textContent || "";
         };
         const plainText = stripHtml(textToCopy);
-
         navigator.clipboard.writeText(plainText).then(() => {
             setIsCopied(true);
             setTimeout(() => setIsCopied(false), 2000);
         }).catch(err => console.error('Failed to copy text: ', err));
     };
-
     return (
-        <button
-            type="button"
-            onClick={handleCopy}
-            className="absolute top-3 right-3 p-1.5 bg-gray-200/80 dark:bg-gray-900/50 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
-            title="Copy to clipboard"
-        >
+        <button type="button" onClick={handleCopy} className="absolute top-3 right-3 p-1.5 bg-gray-200/80 dark:bg-gray-900/50 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-700 transition z-10" title="Copy to clipboard">
             {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
         </button>
     );
 };
 
-// --- Updated IOBox to accept textValue for the CopyButton ---
 const IOBox = ({ title, required, children, textValue }) => (
     <div className="relative bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col h-full">
-        <CopyButton textToCopy={textValue} />
+        {textValue && <CopyButton textToCopy={textValue} />}
         <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             {title} {required && <span className="text-red-500 dark:text-red-400">*</span>}
         </label>
@@ -258,19 +312,11 @@ const IOBox = ({ title, required, children, textValue }) => (
     </div>
 );
 
-
 const SelectorGroup = ({ label, tooltip, children }) => (
     <div className="flex flex-col">
         <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1">
             {label}
-            {tooltip && (
-                <div className="group relative">
-                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <div className="absolute bottom-full mb-2 w-64 bg-gray-800 text-white text-xs rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-gray-700 shadow-lg z-10">
-                        {tooltip}
-                    </div>
-                </div>
-            )}
+            {tooltip && ( <div className="group relative"> <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <div className="absolute bottom-full mb-2 w-64 bg-gray-800 text-white text-xs rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-gray-700 shadow-lg z-10"> {tooltip} </div> </div> )}
         </label>
         {children}
     </div>
