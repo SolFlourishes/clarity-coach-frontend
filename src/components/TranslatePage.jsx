@@ -234,14 +234,14 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                     <h3 className="text-lg font-bold font-serif text-teal-600 dark:text-teal-400 mb-2">{isDraftMode ? "The Translation (Suggested Draft)" : "The Translation (Suggested Response)"}</h3>
                     
                     {/* --- NEW: Conditional rendering for Edit Mode --- */}
-                    <div 
-                        ref={editableDivRef}
-                        contentEditable={isEditing}
-                        suppressContentEditableWarning={true}
-                        onInput={e => setEditedResponse(e.currentTarget.innerHTML)}
-                        className={`prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow ${isEditing ? 'p-2 ring-2 ring-teal-500 rounded-md bg-white dark:bg-gray-900' : ''}`}
-                        dangerouslySetInnerHTML={{ __html: isEditing ? editedResponse : aiResponse.response }} 
-                    />
+                    {isEditing ? (
+                       <EditableContent html={editedResponse} onChange={setEditedResponse} />
+                        ) : (
+                        <div
+                            className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow"
+                            dangerouslySetInnerHTML={{ __html: aiResponse.response }}
+                        />
+                        )}
 
                     <div className="mt-4 flex flex-wrap gap-2 items-center">
                         {!isEditing ? (
@@ -332,3 +332,30 @@ const RadioPillGroup = ({ name, value, onChange, options }) => (
         ))}
     </div>
 );
+
+// --- NEW: Helper Component to manage contentEditable correctly ---
+const EditableContent = ({ html, onChange }) => {
+    const elementRef = useRef(null);
+
+    // This effect updates the div only when the initial html prop changes from the parent,
+    // not on every single keystroke.
+    useEffect(() => {
+        if (elementRef.current && html !== elementRef.current.innerHTML) {
+            elementRef.current.innerHTML = html;
+        }
+    }, [html]);
+
+    const handleInput = (event) => {
+        onChange(event.currentTarget.innerHTML);
+    };
+
+    return (
+        <div
+            ref={elementRef}
+            contentEditable={true}
+            suppressContentEditableWarning={true}
+            onInput={handleInput}
+            className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow p-2 ring-2 ring-teal-500 rounded-md bg-white dark:bg-gray-900"
+        />
+    );
+};
