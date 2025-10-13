@@ -62,12 +62,8 @@ export const HowToUsePage = () => (
         <li><strong>Role-play a Conversation:</strong> Practice a difficult conversation in a safe space.</li>
         <li><strong>Brainstorm Solutions:</strong> Work through a communication problem step-by-step with the AI as your sounding board.</li>
       </ul>
-
-      {/* --- NEW SECTION --- */}
       <h2>Learning from Translations</h2>
       <p>After every translation, you have powerful tools to learn and improve the AI.</p>
-      <h3>The Golden Feedback Loop: Edit, Save, and Re-analyze</h3>
-      <p>This is the most important feature for improving both your skills and the AI's accuracy.</p>
       <ol>
           <li><strong>Edit:</strong> Click the "Edit this translation" button to make inline changes to the AI's suggested text. Correct any phrasing that doesn't feel right to you.</li>
           <li><strong>Save:</strong> Click "Save" to submit your improved version to our database. This is the "golden" data that will be used to train future versions of the AI.</li>
@@ -75,7 +71,6 @@ export const HowToUsePage = () => (
       </ol>
       <h3>Copy to Clipboard</h3>
       <p>Use the copy icon in the top-right corner of any text box to quickly copy its contents (with formatting removed) to your clipboard.</p>
-
     </ContentPage>
 );
 
@@ -89,18 +84,29 @@ export const RoadmapPage = () => (
           <h3>Key Features Implemented</h3>
           <ul>
             <li>Stable backend deployed on Google Cloud Run.</li>
-            <li>Redesigned UI with Tailwind CSS.</li>
-            <li>All previous Beta 2.1 features re-implemented.</li>
+            <li>Redesigned UI with Tailwind CSS and full feature re-implementation.</li>
+            {/* --- UPDATED --- */}
+            <li><strong>Golden Feedback Loop:</strong> Added the ability to edit, save, and re-analyze AI translations.</li>
           </ul>
       </div>
+      
+      {/* --- NEW SECTION --- */}
       <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-700/50 rounded-lg">
-          <h2>Next Phase: Gamma & Beyond</h2>
-          <p>The next major steps are building the "Golden Feedback Loop" and implementing premium features.</p>
+          <h2>Next Phase: Beta (v3.1)</h2>
+          <p>This phase will focus on grounding the AI's responses in a curated knowledge base.</p>
           <h3>Key Enhancements</h3>
           <ul>
-              <li><strong>Golden Feedback Loop:</strong> Allow users to directly edit and save AI-generated text for model training.</li>
+              <li><strong>RAG Implementation:</strong> Ground AI responses in a dedicated library of scholarly articles and communication resources to improve the quality and accuracy of its coaching.</li>
+          </ul>
+      </div>
+      
+      {/* --- UPDATED --- */}
+      <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-700/50 rounded-lg">
+          <h2>Future: Gamma & Beyond</h2>
+          <p>Future development will focus on personalization and premium features.</p>
+          <h3>Key Enhancements</h3>
+          <ul>
               <li><strong>User Accounts (Premium):</strong> Securely save translation history and user preferences.</li>
-              <li><strong>RAG Implementation:</strong> Ground AI responses in your curated library of scholarly articles.</li>
           </ul>
       </div>
     </ContentPage>
@@ -116,7 +122,6 @@ export const ChangeLogPage = () => (
                 <li><strong>Complete UI/UX Redesign:</strong> Rebuilt the entire frontend with Tailwind CSS to align with the Hearthside Works brand guide, improving aesthetics, accessibility, and responsiveness.</li>
                 <li><strong>Component Refactor:</strong> Broke the monolithic App.jsx into individual, manageable component files for clarity and maintainability.</li>
                 <li><strong>New Feature - Verbose Mode:</strong> Added a "Learn More" option to translation results, providing users with a deeper, educational breakdown of the AI's reasoning and specific word choices.</li>
-                {/* --- NEW ITEMS --- */}
                 <li><strong>New Feature - Golden Feedback Loop:</strong> Implemented the ability for users to edit, save, and re-analyze AI translations to provide training data and receive feedback on their changes.</li>
                 <li><strong>UX Improvement - Copy Buttons:</strong> Added copy-to-clipboard functionality for all user inputs and AI-generated outputs.</li>
                 <li>Re-implemented all features from Beta 2.1, including Translate, Analyze, Chat, advanced selectors, and feedback systems.</li>
