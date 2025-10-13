@@ -3,6 +3,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { AlphaBanner } from './AlphaBanner';
 import { FeedbackModal } from './FeedbackModal';
+import { Analytics } from '@vercel/analytics/react';
 
 export const AppLayout = ({ children, theme, toggleTheme }) => {
     const [showBanner, setShowBanner] = useState(true);
