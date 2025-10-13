@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Feedback } from './Feedback'; 
+import { Feedback } from './Feedback';
+import { Copy, Check } from 'lucide-react'; // --- NEW: Import icons ---
 
 const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 const API_BASE_URL = rawApiUrl.replace(/\/$/, "");
@@ -128,21 +129,20 @@ export const TranslatePage = ({ mode = 'draft' }) => {
             <div className={`grid gap-6 ${isDraftMode ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
                 {isDraftMode ? (
                     <>
-                        <IOBox title="What I Mean (Intent)" required><textarea value={context} onChange={(e) => setContext(e.target.value)} placeholder="What is the goal of your message?" required /></IOBox>
-                        <IOBox title="What I Wrote (Draft)" required><textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="What are your key points or raw thoughts?" required /></IOBox>
+                        <IOBox title="What I Mean (Intent)" required textValue={context}><textarea value={context} onChange={(e) => setContext(e.target.value)} placeholder="What is the goal of your message?" required /></IOBox>
+                        <IOBox title="What I Wrote (Draft)" required textValue={text}><textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="What are your key points or raw thoughts?" required /></IOBox>
                     </>
                 ) : (
                     <>
-                        <IOBox title="What They Wrote" required><textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste the message you received." required /></IOBox>
-                        <IOBox title="What's the Situation? (Context)"><textarea value={analyzeContext} onChange={(e) => setAnalyzeContext(e.target.value)} placeholder="e.g., This is my boss, the project is late..." /></IOBox>
-                        <IOBox title="How I Heard It" required><textarea value={interpretation} onChange={(e) => setInterpretation(e.target.value)} placeholder="How did this message make you feel or what do you think it means?" required /></IOBox>
+                        <IOBox title="What They Wrote" required textValue={text}><textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste the message you received." required /></IOBox>
+                        <IOBox title="What's the Situation? (Context)" textValue={analyzeContext}><textarea value={analyzeContext} onChange={(e) => setAnalyzeContext(e.target.value)} placeholder="e.g., This is my boss, the project is late..." /></IOBox>
+                        <IOBox title="How I Heard It" required textValue={interpretation}><textarea value={interpretation} onChange={(e) => setInterpretation(e.target.value)} placeholder="How did this message make you feel or what do you think it means?" required /></IOBox>
                     </>
                 )}
             </div>
 
             <div className="p-6 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 space-y-6">
-                 {/* This section is unchanged */}
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <SelectorGroup label="My Communication Style" tooltip="Direct: You say what you mean. Indirect: You use context and subtext."><RadioPillGroup name="sender" value={senderStyle} onChange={setSenderStyle} options={['direct', 'indirect', 'let-ai-decide']} /></SelectorGroup>
                     <SelectorGroup label="Audience's Style"><RadioPillGroup name="receiver" value={receiverStyle} onChange={setReceiverStyle} options={['direct', 'indirect']} /></SelectorGroup>
                 </div>
@@ -169,20 +169,16 @@ export const TranslatePage = ({ mode = 'draft' }) => {
 
         {aiResponse && (
             <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col">
+                <div className="relative bg-gray-100 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col">
+                    <CopyButton textToCopy={aiResponse.explanation} />
                     <h3 className="text-lg font-bold font-serif text-teal-600 dark:text-teal-400 mb-2">
                         {isDraftMode ? "How They Might Hear It (Explanation)" : "What They Likely Meant (Explanation)"}
                     </h3>
                     <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow" dangerouslySetInnerHTML={{ __html: aiResponse.explanation }} />
-
-                    {/* --- FIX: Added tooltip and corrected disabled logic --- */}
                     {!verboseExplanation && (
-                        <button 
-                            onClick={() => handleVerboseClick('explanation', aiResponse.explanation)} 
-                            disabled={!!isVerboseLoading}
+                        <button onClick={() => handleVerboseClick('explanation', aiResponse.explanation)} disabled={!!isVerboseLoading}
                             className="text-sm text-teal-600 dark:text-teal-400 hover:underline mt-4 disabled:opacity-50"
-                            title="Get a more detailed, educational breakdown of this analysis."
-                        >
+                            title="Get a more detailed, educational breakdown of this analysis.">
                             {isVerboseLoading === 'explanation' ? 'Loading...' : 'Learn More'}
                         </button>
                     )}
@@ -192,23 +188,18 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                             <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: verboseExplanation }} />
                         </div>
                     )}
-                    
                     <Feedback type="explanation" onSubmit={(data) => handleFeedbackSubmit(data, 'explanation')} isSuccess={feedbackSuccess.explanation} />
                 </div>
-                <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col">
+                <div className="relative bg-gray-100 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col">
+                    <CopyButton textToCopy={aiResponse.response} />
                     <h3 className="text-lg font-bold font-serif text-teal-600 dark:text-teal-400 mb-2">
                         {isDraftMode ? "The Translation (Suggested Draft)" : "The Translation (Suggested Response)"}
                     </h3>
                     <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow" dangerouslySetInnerHTML={{ __html: aiResponse.response }} />
-                    
-                    {/* --- FIX: Added tooltip and corrected disabled logic --- */}
                     {!verboseResponse && (
-                        <button 
-                            onClick={() => handleVerboseClick('response', aiResponse.response)} 
-                            disabled={!!isVerboseLoading}
+                        <button onClick={() => handleVerboseClick('response', aiResponse.response)} disabled={!!isVerboseLoading}
                             className="text-sm text-teal-600 dark:text-teal-400 hover:underline mt-4 disabled:opacity-50"
-                            title="Get a breakdown of why this rewritten version is more effective."
-                        >
+                            title="Get a breakdown of why this rewritten version is more effective.">
                             {isVerboseLoading === 'response' ? 'Loading...' : 'Learn More'}
                         </button>
                     )}
@@ -218,7 +209,6 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                            <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: verboseResponse }} />
                         </div>
                     )}
-
                     <Feedback type="response" onSubmit={(data) => handleFeedbackSubmit(data, 'response')} isSuccess={feedbackSuccess.response} />
                 </div>
             </div>
@@ -227,16 +217,47 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     );
 };
 
-// --- Helper components (unchanged) ---
+// --- NEW: Copy Button Helper Component ---
+const CopyButton = ({ textToCopy }) => {
+    const [isCopied, setIsCopied] = useState(false);
 
-const IOBox = ({ title, required, children }) => (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col h-full">
+    const handleCopy = () => {
+        const stripHtml = (html) => {
+            if (!html) return '';
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            return doc.body.textContent || "";
+        };
+        const plainText = stripHtml(textToCopy);
+
+        navigator.clipboard.writeText(plainText).then(() => {
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        }).catch(err => console.error('Failed to copy text: ', err));
+    };
+
+    return (
+        <button
+            type="button"
+            onClick={handleCopy}
+            className="absolute top-3 right-3 p-1.5 bg-gray-200/80 dark:bg-gray-900/50 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+            title="Copy to clipboard"
+        >
+            {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+        </button>
+    );
+};
+
+// --- Updated IOBox to accept textValue for the CopyButton ---
+const IOBox = ({ title, required, children, textValue }) => (
+    <div className="relative bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col h-full">
+        <CopyButton textToCopy={textValue} />
         <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             {title} {required && <span className="text-red-500 dark:text-red-400">*</span>}
         </label>
         {React.cloneElement(children, { className: "io-textarea flex-grow w-full min-h-[150px] p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base font-sans resize-vertical transition focus:outline-none focus:ring-2 focus:ring-teal-500" })}
     </div>
 );
+
 
 const SelectorGroup = ({ label, tooltip, children }) => (
     <div className="flex flex-col">
