@@ -41,6 +41,7 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     const [editSaveSuccess, setEditSaveSuccess] = useState(false);
     const [isReanalyzing, setIsReanalyzing] = useState(false);
     const [reanalysisResult, setReanalysisResult] = useState(null);
+    const [feedbackDocId, setFeedbackDocId] = useState(null);
     const editableDivRef = useRef(null);
     
     const isDraftMode = mode === 'draft';
@@ -111,51 +112,70 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     };
 
     const handleSaveEdit = async () => {
-        setIsSavingEdit(true);
-        setError(null);
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/feedback/edit`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    originalInputs, 
-                    originalResponse: aiResponse.response,
-                    editedResponse,
-                }),
-            });
-            if (!res.ok) throw new Error('Failed to save your edit.');
-            setEditSaveSuccess(true);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setIsSavingEdit(false);
-        }
-    };
+    setIsSavingEdit(true);
+    setError(null);
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/feedback/edit`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                originalInputs, 
+                originalResponse: aiResponse.response,
+                editedResponse,
+            }),
+        });
+        if (!res.ok) throw new Error('Failed to save your edit.');
+        
+        // NEW: Capture the document ID returned from the backend
+        const { docId } = await res.json();
+        setFeedbackDocId(docId); // Save the ID to state
+        setEditSaveSuccess(true);
 
-    const handleReanalyzeClick = async () => {
-        setIsReanalyzing(true);
-        setError(null);
-        setReanalysisResult(null);
-        try {
-            // We re-use the 'analyze' mode of the main translate endpoint for this
-            const requestBody = { 
-                ...originalInputs, 
-                mode: 'analyze', // Force analyze mode
-                text: editedResponse, // Use the user's edited text as the new message to analyze
-                analyzeContext: `The user edited the AI's suggestion. Analyze their new version for clarity and potential misinterpretations based on the original sender/receiver profiles. Original AI suggestion was: "${aiResponse.response}"`,
-                interpretation: 'How does my new version sound?'
-            };
-            const res = await fetch(`${API_BASE_URL}/api/translate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
-            if (!res.ok) { const errData = await res.json(); throw new Error(errData.error || 'Failed to re-analyze.'); }
-            const data = await res.json();
-            setReanalysisResult(data.explanation); // We only care about the new explanation
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setIsReanalyzing(false);
-        }
-    };
+    } catch (err) {
+        setError(err.message);
+    } finally {
+        setIsSavingEdit(false);
+    }
+};
 
+   const handleReanalyzeClick = async () => {
+    // NEW: Check if the edit has been saved first
+    if (!feedbackDocId) {
+        setError("Please save your edit before re-analyzing.");
+        return;
+    }
+
+    setIsReanalyzing(true);
+    setError(null);
+    setReanalysisResult(null);
+
+    try {
+        // Step 1: Get the re-analysis from the AI (this part is correct)
+        const requestBody = { 
+            ...originalInputs, 
+            mode: 'analyze',
+            text: editedResponse,
+            analyzeContext: `The user edited the AI's suggestion. Analyze their new version for clarity and potential misinterpretations based on the original sender/receiver profiles. Original AI suggestion was: "${aiResponse.response}"`,
+            interpretation: 'How does my new version sound?'
+        };
+        const transRes = await fetch(`${API_BASE_URL}/api/translate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
+        if (!transRes.ok) { const errData = await transRes.json(); throw new Error(errData.error || 'Failed to re-analyze.'); }
+        const data = await transRes.json();
+        setReanalysisResult(data.explanation);
+
+        // NEW - Step 2: Save the re-analysis result to the existing Firestore document
+        await fetch(`${API_BASE_URL}/api/feedback/reanalysis`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ docId: feedbackDocId, reanalysisText: data.explanation })
+        });
+
+    } catch (err) {
+        setError(err.message);
+    } finally {
+        setIsReanalyzing(false);
+    }
+};
     const handleReset = () => { 
         setText(''); setContext(''); setInterpretation(''); setAnalyzeContext(''); setError(null); setAiResponse(null); setFeedbackSuccess({ explanation: false, response: false }); setIsAdvancedMode(false); setSenderStyle('let-ai-decide'); setReceiverStyle('indirect'); setSenderNeurotype('Unsure'); setReceiverNeurotype('Unsure'); setSenderGeneration('unsure'); setReceiverGeneration('unsure');
         setVerboseExplanation(''); setVerboseResponse(''); setOriginalInputs(null); setIsVerboseLoading(null);
