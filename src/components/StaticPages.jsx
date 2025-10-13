@@ -2,7 +2,7 @@ import React from 'react';
 
 // This is a shared wrapper component to give all static pages the same look and feel.
 const ContentPage = ({ children }) => (
-    <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800/50 p-6 sm:p-8 rounded-lg border border-gray-200 dark:border-gray-700">
+    <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800/50 p-6 sm:p-8 rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="prose prose-lg dark:prose-invert max-w-none prose-h1:font-serif prose-h1:text-teal-600 dark:prose-h1:text-teal-400 prose-strong:text-terracotta-500 prose-a:text-teal-500 dark:prose-a:text-teal-400 hover:prose-a:text-teal-600 dark:hover:prose-a:text-teal-300">
             {children}
         </div>
@@ -74,37 +74,82 @@ export const HowToUsePage = () => (
     </ContentPage>
 );
 
+// --- UPDATED ROADMAP COMPONENT ---
 export const RoadmapPage = () => (
     <ContentPage>
       <h1>Application Roadmap</h1>
-      <p className="lead">We believe in transparency. This page outlines our current state and future vision.</p>
-      <div className="p-4 bg-gray-100 dark:bg-gray-700/50 rounded-lg">
-          <h2>Current Phase: Beta (v3.0)</h2>
-          <p>This version is focused on a robust, decoupled architecture and a full UI redesign in line with Hearthside Works branding.</p>
-          <h3>Key Features Implemented</h3>
-          <ul>
-            <li>Stable backend deployed on Google Cloud Run.</li>
-            <li>Redesigned UI with Tailwind CSS and full feature re-implementation.</li>
-            <li><strong>Golden Feedback Loop:</strong> Added the ability to edit, save, and re-analyze AI translations.</li>
-          </ul>
-      </div>
-      
-      <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-700/50 rounded-lg">
-          <h2>Next Phase: Beta (v3.1)</h2>
-          <p>This phase will focus on grounding the AI's responses in a curated knowledge base.</p>
-          <h3>Key Enhancements</h3>
-          <ul>
-              <li><strong>RAG Implementation:</strong> Ground AI responses in a dedicated library of scholarly articles and communication resources to improve the quality and accuracy of its coaching.</li>
-          </ul>
-      </div>
-      
-      <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-700/50 rounded-lg">
-          <h2>Future: Gamma & Beyond</h2>
-          <p>Future development will focus on personalization and premium features.</p>
-          <h3>Key Enhancements</h3>
-          <ul>
-              <li><strong>User Accounts (Premium):</strong> Securely save translation history and user preferences.</li>
-          </ul>
+      <p className="lead">We believe in transparency. This page outlines our current state and future vision, which is divided into two major phases: Beta (Stabilization and Free Features) and Gamma (Premium Features).</p>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse">
+            <thead>
+                <tr>
+                    <th className="py-2 px-4 border-b dark:border-gray-600 font-semibold">Phase</th>
+                    <th className="py-2 px-4 border-b dark:border-gray-600 font-semibold">Version</th>
+                    <th className="py-2 px-4 border-b dark:border-gray-600 font-semibold">Focus Area</th>
+                    <th className="py-2 px-4 border-b dark:border-gray-600 font-semibold">Key Deliverables</th>
+                    <th className="py-2 px-4 border-b dark:border-gray-600 font-semibold">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr className="bg-teal-50 dark:bg-teal-900/20">
+                    <td className="py-2 px-4 border-b dark:border-gray-700 font-semibold align-top" rowSpan="3">Beta</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">3.0</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Core Infrastructure Redesign</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Complete re-design of backend infrastructure, UI redesign with Tailwind CSS, and implementation of the Golden Feedback Loop.</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700 text-green-600 dark:text-green-400 font-bold">Completed</td>
+                </tr>
+                <tr className="bg-teal-50 dark:bg-teal-900/20">
+                    <td className="py-2 px-4 border-b dark:border-gray-700">3.1</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">A Smarter AI Brain (RAG)</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Integration of Retrieval-Augmented Generation to ground AI advice in a factual, evidence-based knowledge base.</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Planning</td>
+                </tr>
+                <tr className="bg-teal-50 dark:bg-teal-900/20">
+                    <td className="py-2 px-4 border-b dark:border-gray-700">3.2</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">General Polish</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">UI/UX Enhancements & Power-User Features (accessibility, quality-of-life improvements).</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Planning</td>
+                </tr>
+                <tr className="bg-purple-50 dark:bg-purple-900/20">
+                    <td className="py-2 px-4 border-b dark:border-gray-700 font-semibold align-top" rowSpan="6">Gamma (Premium)</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">1.0</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Monetization / Personalization</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">User Profiles and History.</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Planning</td>
+                </tr>
+                <tr className="bg-purple-50 dark:bg-purple-900/20">
+                    <td className="py-2 px-4 border-b dark:border-gray-700">1.1</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Advanced Ideological Translation</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Politalk: A feature to translate discourse between different ideological viewpoints.</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Planning</td>
+                </tr>
+                <tr className="bg-purple-50 dark:bg-purple-900/20">
+                    <td className="py-2 px-4 border-b dark:border-gray-700">1.2</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Generational & Professionalism Analysis</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">The Professionalism Lens: Analyze communication for perceived professionalism across different generational and hierarchical contexts.</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Planning</td>
+                </tr>
+                <tr className="bg-purple-50 dark:bg-purple-900/20">
+                    <td className="py-2 px-4 border-b dark:border-gray-700">1.3</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Advanced Cross-Cultural Analysis</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">International & Cultural Translation: Add support for multiple languages and cultural contexts.</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Planning</td>
+                </tr>
+                <tr className="bg-purple-50 dark:bg-purple-900/20">
+                    <td className="py-2 px-4 border-b dark:border-gray-700">1.4</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Skill Building</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Practice Conversation Simulator: Real-time conversation with a full set of AI personas.</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Planning</td>
+                </tr>
+                 <tr className="bg-purple-50 dark:bg-purple-900/20">
+                    <td className="py-2 px-4 border-b dark:border-gray-700">1.5</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Workflow Integration</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Browser & App Extension: Integrate Clarity Coach directly into web browsers, email clients, and other applications.</td>
+                    <td className="py-2 px-4 border-b dark:border-gray-700">Planning</td>
+                </tr>
+            </tbody>
+        </table>
       </div>
     </ContentPage>
 );
@@ -112,40 +157,34 @@ export const RoadmapPage = () => (
 export const ChangeLogPage = () => (
     <ContentPage>
         <h1>Change Log</h1>
-
-        {/* --- UPDATED SECTION --- */}
         <div className="mb-6">
             <h2>Version 3.0.2 (Current)</h2>
             <ul>
-                <li><strong>Accessibility Audit & Fixes:</strong> Improved color contrast on placeholder text, added ARIA labels for screen reader users, and enhanced keyboard navigation for interactive elements.</li>
+                <li><strong>Accessibility Audit & Fixes:</strong> Improved color contrast, added ARIA labels for screen readers, and enhanced keyboard navigation.</li>
             </ul>
         </div>
         <div className="mb-6">
             <h2>Version 3.0.1</h2>
             <ul>
-                <li><strong>Bug Fix:</strong> Corrected an issue where user input text was cleared after submitting a translation, allowing for easier comparison between the original text and the AI's suggestions.</li>
+                <li><strong>Bug Fix:</strong> Corrected an issue where user input text was cleared after submitting a translation.</li>
             </ul>
         </div>
-        {/* --- END UPDATE --- */}
-        
         <div className="mb-6">
             <h2>Version 3.0</h2>
             <ul>
-                <li><strong>Major Architectural Restructure:</strong> Migrated backend from Vercel Serverless to a dedicated Node.js server on Google Cloud Run to ensure stability and eliminate streaming errors.</li>
-                <li><strong>Complete UI/UX Redesign:</strong> Rebuilt the entire frontend with Tailwind CSS to align with the Hearthside Works brand guide, improving aesthetics, accessibility, and responsiveness.</li>
-                <li><strong>Component Refactor:</strong> Broke the monolithic App.jsx into individual, manageable component files for clarity and maintainability.</li>
-                <li><strong>New Feature - Verbose Mode:</strong> Added a "Learn More" option to translation results, providing users with a deeper, educational breakdown of the AI's reasoning and specific word choices.</li>
-                <li><strong>New Feature - Golden Feedback Loop:</strong> Implemented the ability for users to edit, save, and re-analyze AI translations to provide training data and receive feedback on their changes.</li>
-                <li><strong>UX Improvement - Copy Buttons:</strong> Added copy-to-clipboard functionality for all user inputs and AI-generated outputs.</li>
-                <li>Re-implemented all features from Beta 2.1, including Translate, Analyze, Chat, advanced selectors, and feedback systems.</li>
+                <li><strong>Major Architectural Restructure:</strong> Migrated backend to Google Cloud Run.</li>
+                <li><strong>Complete UI/UX Redesign:</strong> Rebuilt the entire frontend with Tailwind CSS.</li>
+                <li><strong>Component Refactor:</strong> Broke the monolithic App.jsx into individual components.</li>
+                <li><strong>New Feature - Verbose Mode:</strong> Added a "Learn More" option for deeper analysis.</li>
+                <li><strong>New Feature - Golden Feedback Loop:</strong> Implemented edit, save, and re-analyze functionality.</li>
+                <li><strong>UX Improvement - Copy Buttons:</strong> Added copy-to-clipboard functionality.</li>
             </ul>
         </div>
-
         <div className="mb-6">
             <h2>Version 2.1.1</h2>
             <ul>
-                <li><strong>Branding Update:</strong> Updated all branding to reflect the new company name, "Hearthside Works," and the product name, "Clarity Coach."</li>
-                <li>Added "Our Commitments" page for Privacy and Accessibility statements.</li>
+                <li><strong>Branding Update:</strong> Updated branding to "Hearthside Works" and "Clarity Coach."</li>
+                <li>Added "Our Commitments" page.</li>
             </ul>
         </div>
     </ContentPage>
@@ -175,7 +214,7 @@ export const CommitmentsPage = () => (
       <h3>Can you see what I type into the translator?</h3>
       <p><strong>No.</strong> The text you enter for translation or analysis is sent securely to the AI for processing and is immediately discarded. It is never stored, and it is never seen by any human at Hearthside Works, LLC. Your conversations and thoughts are your own.</p>
       <h3>What Data Do You Collect?</h3>
-      <p>We only store anonymous feedback data (star ratings and comments) to help us identify areas for improvement. This data is completely disconnected from any personal identifiers.</p>
+      <p>We only store anonymous feedback data (star ratings, comments, and your "golden" edits) to help us identify areas for improvement. This data is completely disconnected from any personal identifiers.</p>
       <h2>Commitment to Accessibility</h2>
       <p>Hearthside Works is dedicated to ensuring the Clarity Coach is accessible to all users. Our goal is to conform to the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA standards.</p>
     </ContentPage>
