@@ -7,7 +7,7 @@ const API_BASE_URL = rawApiUrl.replace(/\/$/, "");
 export const Footer = () => {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
-    const version = "3.0.1"; // The current version number
+    const version = "3.0.2"; // --- UPDATED VERSION ---
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,7 +35,6 @@ export const Footer = () => {
                 <div className="md:flex md:justify-between">
                     <div className="mb-6 md:mb-0">
                         <p className="text-sm text-gray-500 dark:text-gray-400">&copy; {new Date().getFullYear()} Hearthside Works, LLC. All Rights Reserved.</p>
-                        {/* --- Version Number Added Here --- */}
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Beta v{version}</p>
                         <a href="#/commitments" className="text-sm text-gray-500 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400">Our Commitments (Privacy & Accessibility)</a>
                     </div>

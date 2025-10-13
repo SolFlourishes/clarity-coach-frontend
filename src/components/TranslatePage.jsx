@@ -61,9 +61,6 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     const handleSubmit = async (event) => {
         event.preventDefault(); 
         
-        // --- THIS IS THE FIX ---
-        // Instead of calling handleReset(), we selectively clear only the previous results.
-        // The user's input fields (text, context, etc.) will remain untouched.
         setError(null); 
         setAiResponse(null); 
         setFeedbackSuccess({ explanation: false, response: false });
@@ -77,7 +74,6 @@ export const TranslatePage = ({ mode = 'draft' }) => {
         setIsReanalyzing(false); 
         setReanalysisResult(null);
         setFeedbackDocId(null);
-        // --- END OF FIX ---
 
         setLoading(true); 
         
@@ -194,12 +190,16 @@ export const TranslatePage = ({ mode = 'draft' }) => {
         {error && <div className="mt-6 text-center text-red-500 dark:text-red-400 p-3 bg-red-100 dark:bg-red-900/50 rounded-lg">{error}</div>}
 
         {aiResponse && (
-            <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div 
+                className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 grid grid-cols-1 md:grid-cols-2 gap-6"
+                aria-live="polite"
+                aria-atomic="true"
+            >
                 <div className="relative bg-gray-100 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col">
                     <CopyButton textToCopy={aiResponse.explanation} />
                     <h3 className="text-lg font-bold font-serif text-teal-600 dark:text-teal-400 mb-2">{isDraftMode ? "How They Might Hear It (Explanation)" : "What They Likely Meant (Explanation)"}</h3>
                     <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow" dangerouslySetInnerHTML={{ __html: aiResponse.explanation }} />
-                    {!verboseExplanation && ( <button onClick={() => handleVerboseClick('explanation', aiResponse.explanation)} disabled={!!isVerboseLoading} className="text-sm text-teal-600 dark:text-teal-400 hover:underline mt-4 disabled:opacity-50" title="Get a more detailed, educational breakdown of this analysis."> {isVerboseLoading === 'explanation' ? 'Loading...' : 'Learn More'} </button> )}
+                    {!verboseExplanation && ( <button onClick={() => handleVerboseClick('explanation', aiResponse.explanation)} disabled={!!isVerboseLoading} className="text-sm text-teal-600 dark:text-teal-400 hover:underline mt-4 disabled:opacity-50" title="Get a more detailed, educational breakdown of this analysis." aria-label="Learn more about the explanation"> {isVerboseLoading === 'explanation' ? 'Loading...' : 'Learn More'} </button> )}
                     {verboseExplanation && ( <div className="mt-4 p-4 bg-gray-200 dark:bg-gray-900/70 rounded-lg"> <h4 className="font-bold text-terracotta-500 dark:text-terracotta-400 mb-2">Deeper Dive</h4> <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: verboseExplanation }} /> </div> )}
                     <Feedback type="explanation" onSubmit={(data) => handleFeedbackSubmit(data, 'explanation')} isSuccess={feedbackSuccess.explanation} />
                 </div>
@@ -207,13 +207,18 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                     <CopyButton textToCopy={isEditing ? editedResponse : aiResponse.response} />
                     <h3 className="text-lg font-bold font-serif text-teal-600 dark:text-teal-400 mb-2">{isDraftMode ? "The Translation (Suggested Draft)" : "The Translation (Suggested Response)"}</h3>
                     {isEditing ? (<EditableContent html={editedResponse} onChange={setEditedResponse} />) : (<div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow" dangerouslySetInnerHTML={{ __html: aiResponse.response }} />)}
-                    <div className="mt-4 flex flex-wrap gap-2 items-center">
+                    <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 items-center">
                         {!isEditing ? (<button onClick={handleEditClick} className="flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:underline"> <Edit className="h-4 w-4" /> Edit this translation </button>) : (
                             <>
                                 <button onClick={handleSaveEdit} disabled={isSavingEdit} className="flex items-center gap-1 text-sm px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-500"> <Save className="h-4 w-4" /> {isSavingEdit ? 'Saving...' : 'Save'} </button>
                                 <button onClick={() => setIsEditing(false)} className="flex items-center gap-1 text-sm px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600"> <X className="h-4 w-4" /> Cancel </button>
                                 <button onClick={handleReanalyzeClick} disabled={isReanalyzing || !editSaveSuccess} className="flex items-center gap-1 text-sm text-purple-600 dark:text-purple-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed" title={!editSaveSuccess ? "You must save your edit first" : ""}> <RefreshCw className={`h-4 w-4 ${isReanalyzing ? 'animate-spin' : ''}`} /> {isReanalyzing ? 'Analyzing...' : 'Re-analyze My Edit'} </button>
                             </>
+                        )}
+                        {!isEditing && !verboseResponse && (
+                            <button onClick={() => handleVerboseClick('response', aiResponse.response)} disabled={!!isVerboseLoading} className="text-sm text-teal-600 dark:text-teal-400 hover:underline ml-auto" title="Get a breakdown of why this rewritten version is more effective." aria-label="Learn more about the suggested response">
+                                {isVerboseLoading === 'response' ? 'Loading...' : 'Learn More'}
+                            </button>
                         )}
                     </div>
                     {editSaveSuccess && <p className="text-sm text-green-600 dark:text-green-400 mt-2">Thank you! Your feedback has been saved.</p>}
@@ -226,6 +231,7 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     );
 };
 
+// --- Helper Components ---
 const EditableContent = ({ html, onChange }) => {
     const elementRef = useRef(null);
     useEffect(() => {
@@ -240,7 +246,6 @@ const EditableContent = ({ html, onChange }) => {
         <div ref={elementRef} contentEditable={true} suppressContentEditableWarning={true} onInput={handleInput} className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow p-2 ring-2 ring-teal-500 rounded-md bg-white dark:bg-gray-900"/>
     );
 };
-
 const CopyButton = ({ textToCopy }) => {
     const [isCopied, setIsCopied] = useState(false);
     const handleCopy = () => {
@@ -261,17 +266,15 @@ const CopyButton = ({ textToCopy }) => {
         </button>
     );
 };
-
 const IOBox = ({ title, required, children, textValue }) => (
     <div className="relative bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col h-full">
         {textValue && <CopyButton textToCopy={textValue} />}
         <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             {title} {required && <span className="text-red-500 dark:text-red-400">*</span>}
         </label>
-        {React.cloneElement(children, { className: "io-textarea flex-grow w-full min-h-[150px] p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base font-sans resize-vertical transition focus:outline-none focus:ring-2 focus:ring-teal-500" })}
+        {React.cloneElement(children, { className: "io-textarea flex-grow w-full min-h-[150px] p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base font-sans resize-vertical transition focus:outline-none focus:ring-2 focus:ring-teal-500 placeholder-gray-600 dark:placeholder-gray-400" })} 
     </div>
 );
-
 const SelectorGroup = ({ label, tooltip, children }) => (
     <div className="flex flex-col">
         <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1">
@@ -281,7 +284,6 @@ const SelectorGroup = ({ label, tooltip, children }) => (
         {children}
     </div>
 );
-
 const RadioPillGroup = ({ name, value, onChange, options }) => (
     <div className="flex flex-wrap gap-2">
         {options.map(option => (

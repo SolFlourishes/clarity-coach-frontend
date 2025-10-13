@@ -113,13 +113,20 @@ export const ChangeLogPage = () => (
     <ContentPage>
         <h1>Change Log</h1>
 
-        {/* --- NEW SECTION --- */}
+        {/* --- UPDATED SECTION --- */}
         <div className="mb-6">
-            <h2>Version 3.0.1 (Current)</h2>
+            <h2>Version 3.0.2 (Current)</h2>
+            <ul>
+                <li><strong>Accessibility Audit & Fixes:</strong> Improved color contrast on placeholder text, added ARIA labels for screen reader users, and enhanced keyboard navigation for interactive elements.</li>
+            </ul>
+        </div>
+        <div className="mb-6">
+            <h2>Version 3.0.1</h2>
             <ul>
                 <li><strong>Bug Fix:</strong> Corrected an issue where user input text was cleared after submitting a translation, allowing for easier comparison between the original text and the AI's suggestions.</li>
             </ul>
         </div>
+        {/* --- END UPDATE --- */}
         
         <div className="mb-6">
             <h2>Version 3.0</h2>
