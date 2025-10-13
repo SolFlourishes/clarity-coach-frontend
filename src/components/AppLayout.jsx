@@ -10,7 +10,6 @@ export const AppLayout = ({ children, theme, toggleTheme }) => {
             <div className="bg-yellow-400 dark:bg-yellow-600 text-center py-2 px-4 text-sm text-black dark:text-white font-semibold">
                 Clarity Coach is currently in Beta. Your feedback is valuable in shaping its future!
             </div>
-            {/* --- End of Banner --- */}
 
             <Header theme={theme} toggleTheme={toggleTheme} />
             <main className="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8">
