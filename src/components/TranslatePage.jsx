@@ -43,6 +43,7 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     const [reanalysisResult, setReanalysisResult] = useState(null);
     const [feedbackDocId, setFeedbackDocId] = useState(null);
     const editableDivRef = useRef(null);
+    const [reanalysisSaveSuccess, setReanalysisSaveSuccess] = useState(false);
     
     const isDraftMode = mode === 'draft';
     
@@ -140,10 +141,10 @@ export const TranslatePage = ({ mode = 'draft' }) => {
 
    const handleReanalyzeClick = async () => {
     // NEW: Check if the edit has been saved first
-    if (!feedbackDocId) {
-        setError("Please save your edit before re-analyzing.");
-        return;
-    }
+   const reanalysisSaveRes = await fetch(`${API_BASE_URL}/api/feedback/reanalysis`, { /* ... */ });
+        if (reanalysisSaveRes.ok) {
+        setReanalysisSaveSuccess(true);
+}
 
     setIsReanalyzing(true);
     setError(null);
@@ -288,6 +289,7 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                          <div className="mt-4 p-4 bg-gray-200 dark:bg-gray-900/70 rounded-lg">
                             <h4 className="font-bold text-terracotta-500 dark:text-terracotta-400 mb-2">Analysis of Your Edit</h4>
                            <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: reanalysisResult }} />
+                           {reanalysisSaveSuccess && <p className="text-xs text-gray-500 mt-2">✓ Analysis saved for AI training.</p>}
                         </div>
                     )}
                     
