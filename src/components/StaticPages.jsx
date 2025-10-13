@@ -85,12 +85,10 @@ export const RoadmapPage = () => (
           <ul>
             <li>Stable backend deployed on Google Cloud Run.</li>
             <li>Redesigned UI with Tailwind CSS and full feature re-implementation.</li>
-            {/* --- UPDATED --- */}
             <li><strong>Golden Feedback Loop:</strong> Added the ability to edit, save, and re-analyze AI translations.</li>
           </ul>
       </div>
       
-      {/* --- NEW SECTION --- */}
       <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-700/50 rounded-lg">
           <h2>Next Phase: Beta (v3.1)</h2>
           <p>This phase will focus on grounding the AI's responses in a curated knowledge base.</p>
@@ -100,7 +98,6 @@ export const RoadmapPage = () => (
           </ul>
       </div>
       
-      {/* --- UPDATED --- */}
       <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-700/50 rounded-lg">
           <h2>Future: Gamma & Beyond</h2>
           <p>Future development will focus on personalization and premium features.</p>
@@ -115,8 +112,17 @@ export const RoadmapPage = () => (
 export const ChangeLogPage = () => (
     <ContentPage>
         <h1>Change Log</h1>
+
+        {/* --- NEW SECTION --- */}
         <div className="mb-6">
-            <h2>Version 3.0 (Current)</h2>
+            <h2>Version 3.0.1 (Current)</h2>
+            <ul>
+                <li><strong>Bug Fix:</strong> Corrected an issue where user input text was cleared after submitting a translation, allowing for easier comparison between the original text and the AI's suggestions.</li>
+            </ul>
+        </div>
+        
+        <div className="mb-6">
+            <h2>Version 3.0</h2>
             <ul>
                 <li><strong>Major Architectural Restructure:</strong> Migrated backend from Vercel Serverless to a dedicated Node.js server on Google Cloud Run to ensure stability and eliminate streaming errors.</li>
                 <li><strong>Complete UI/UX Redesign:</strong> Rebuilt the entire frontend with Tailwind CSS to align with the Hearthside Works brand guide, improving aesthetics, accessibility, and responsiveness.</li>
@@ -127,6 +133,7 @@ export const ChangeLogPage = () => (
                 <li>Re-implemented all features from Beta 2.1, including Translate, Analyze, Chat, advanced selectors, and feedback systems.</li>
             </ul>
         </div>
+
         <div className="mb-6">
             <h2>Version 2.1.1</h2>
             <ul>

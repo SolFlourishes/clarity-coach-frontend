@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Feedback } from './Feedback';
-import { Copy, Check, Edit, Save, X, RefreshCw } from 'lucide-react'; // --- NEW: More icons for new buttons ---
+import { Copy, Check, Edit, Save, X, RefreshCw } from 'lucide-react';
 
 const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 const API_BASE_URL = rawApiUrl.replace(/\/$/, "");
@@ -10,7 +10,6 @@ const loadingTips = [
 ];
 
 export const TranslatePage = ({ mode = 'draft' }) => {
-    // (Existing state variables are unchanged)
     const generations = ['Boomer', 'Gen X', 'Xennial', 'Millennial', 'Gen Z', 'Gen Alpha', 'unsure'];
     const neurotypes = ['Autism', 'ADHD', 'Neurotypical', 'Unsure'];
     const [isAdvancedMode, setIsAdvancedMode] = useState(false);
@@ -33,8 +32,6 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     const [verboseExplanation, setVerboseExplanation] = useState('');
     const [verboseResponse, setVerboseResponse] = useState('');
     const [isVerboseLoading, setIsVerboseLoading] = useState(null);
-
-    // --- NEW: State for Golden Feedback Loop ---
     const [isEditing, setIsEditing] = useState(false);
     const [editedResponse, setEditedResponse] = useState('');
     const [isSavingEdit, setIsSavingEdit] = useState(false);
@@ -42,8 +39,6 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     const [isReanalyzing, setIsReanalyzing] = useState(false);
     const [reanalysisResult, setReanalysisResult] = useState(null);
     const [feedbackDocId, setFeedbackDocId] = useState(null);
-    const editableDivRef = useRef(null);
-    const [reanalysisSaveSuccess, setReanalysisSaveSuccess] = useState(false);
     
     const isDraftMode = mode === 'draft';
     
@@ -62,18 +57,30 @@ export const TranslatePage = ({ mode = 'draft' }) => {
         }
         return () => clearInterval(interval);
     }, [loading]);
-
-    // This effect focuses the editable div when editing starts
-    useEffect(() => {
-        if (isEditing && editableDivRef.current) {
-            editableDivRef.current.focus();
-        }
-    }, [isEditing]);
     
     const handleSubmit = async (event) => {
         event.preventDefault(); 
-        handleReset(); // Full reset before a new translation
+        
+        // --- THIS IS THE FIX ---
+        // Instead of calling handleReset(), we selectively clear only the previous results.
+        // The user's input fields (text, context, etc.) will remain untouched.
+        setError(null); 
+        setAiResponse(null); 
+        setFeedbackSuccess({ explanation: false, response: false });
+        setVerboseExplanation('');
+        setVerboseResponse('');
+        setOriginalInputs(null);
+        setIsEditing(false); 
+        setEditedResponse(''); 
+        setIsSavingEdit(false); 
+        setEditSaveSuccess(false); 
+        setIsReanalyzing(false); 
+        setReanalysisResult(null);
+        setFeedbackDocId(null);
+        // --- END OF FIX ---
+
         setLoading(true); 
+        
         try {
             let finalSenderStyle = senderStyle;
             if (senderStyle === 'let-ai-decide') {
@@ -104,84 +111,46 @@ export const TranslatePage = ({ mode = 'draft' }) => {
         } catch (err) { setError(err.message); } finally { setIsVerboseLoading(null); }
     };
     
-    // --- NEW: Handlers for the Golden Feedback Loop ---
     const handleEditClick = () => {
         setEditedResponse(aiResponse.response);
         setIsEditing(true);
-        setEditSaveSuccess(false); // Reset success message
-        setReanalysisResult(null); // Clear previous re-analysis
+        setEditSaveSuccess(false);
+        setReanalysisResult(null);
+        setFeedbackDocId(null);
     };
 
     const handleSaveEdit = async () => {
-    setIsSavingEdit(true);
-    setError(null);
-    try {
-        const res = await fetch(`${API_BASE_URL}/api/feedback/edit`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                originalInputs, 
-                originalResponse: aiResponse.response,
-                editedResponse,
-            }),
-        });
-        if (!res.ok) throw new Error('Failed to save your edit.');
-        
-        // NEW: Capture the document ID returned from the backend
-        const { docId } = await res.json();
-        setFeedbackDocId(docId); // Save the ID to state
-        setEditSaveSuccess(true);
+        setIsSavingEdit(true); setError(null);
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/feedback/edit`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ originalInputs, originalResponse: aiResponse.response, editedResponse, }), });
+            if (!res.ok) throw new Error('Failed to save your edit.');
+            const { docId } = await res.json();
+            setFeedbackDocId(docId);
+            setEditSaveSuccess(true);
+        } catch (err) { setError(err.message); } finally { setIsSavingEdit(false); }
+    };
 
-    } catch (err) {
-        setError(err.message);
-    } finally {
-        setIsSavingEdit(false);
-    }
-};
-
-   const handleReanalyzeClick = async () => {
-    // NEW: Check if the edit has been saved first
-   const reanalysisSaveRes = await fetch(`${API_BASE_URL}/api/feedback/reanalysis`, { /* ... */ });
-        if (reanalysisSaveRes.ok) {
-        setReanalysisSaveSuccess(true);
-}
-
-    setIsReanalyzing(true);
-    setError(null);
-    setReanalysisResult(null);
-
-    try {
-        // Step 1: Get the re-analysis from the AI (this part is correct)
-        const requestBody = { 
-            ...originalInputs, 
-            mode: 'analyze',
-            text: editedResponse,
-            analyzeContext: `The user edited the AI's suggestion. Analyze their new version for clarity and potential misinterpretations based on the original sender/receiver profiles. Original AI suggestion was: "${aiResponse.response}"`,
-            interpretation: 'How does my new version sound?'
-        };
-        const transRes = await fetch(`${API_BASE_URL}/api/translate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
-        if (!transRes.ok) { const errData = await transRes.json(); throw new Error(errData.error || 'Failed to re-analyze.'); }
-        const data = await transRes.json();
-        setReanalysisResult(data.explanation);
-
-        // NEW - Step 2: Save the re-analysis result to the existing Firestore document
-        await fetch(`${API_BASE_URL}/api/feedback/reanalysis`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ docId: feedbackDocId, reanalysisText: data.explanation })
-        });
-
-    } catch (err) {
-        setError(err.message);
-    } finally {
-        setIsReanalyzing(false);
-    }
-};
+    const handleReanalyzeClick = async () => {
+        if (!feedbackDocId) {
+            setError("Please save your edit before re-analyzing.");
+            return;
+        }
+        setIsReanalyzing(true); setError(null); setReanalysisResult(null);
+        try {
+            const requestBody = { ...originalInputs, mode: 'analyze', text: editedResponse, analyzeContext: `The user edited the AI's suggestion. Analyze their new version for clarity and potential misinterpretations based on the original sender/receiver profiles. Original AI suggestion was: "${aiResponse.response}"`, interpretation: 'How does my new version sound?' };
+            const transRes = await fetch(`${API_BASE_URL}/api/translate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
+            if (!transRes.ok) { const errData = await transRes.json(); throw new Error(errData.error || 'Failed to re-analyze.'); }
+            const data = await transRes.json();
+            setReanalysisResult(data.explanation);
+            await fetch(`${API_BASE_URL}/api/feedback/reanalysis`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ docId: feedbackDocId, reanalysisText: data.explanation }) });
+        } catch (err) { setError(err.message); } finally { setIsReanalyzing(false); }
+    };
+    
     const handleReset = () => { 
         setText(''); setContext(''); setInterpretation(''); setAnalyzeContext(''); setError(null); setAiResponse(null); setFeedbackSuccess({ explanation: false, response: false }); setIsAdvancedMode(false); setSenderStyle('let-ai-decide'); setReceiverStyle('indirect'); setSenderNeurotype('Unsure'); setReceiverNeurotype('Unsure'); setSenderGeneration('unsure'); setReceiverGeneration('unsure');
         setVerboseExplanation(''); setVerboseResponse(''); setOriginalInputs(null); setIsVerboseLoading(null);
-        // --- NEW: Reset Golden Loop state ---
         setIsEditing(false); setEditedResponse(''); setIsSavingEdit(false); setEditSaveSuccess(false); setIsReanalyzing(false); setReanalysisResult(null);
+        setFeedbackDocId(null);
     };
     
     const handleFeedbackSubmit = async (feedbackData, type) => {
@@ -198,20 +167,12 @@ export const TranslatePage = ({ mode = 'draft' }) => {
         <h1 className="text-3xl md:text-4xl font-bold font-serif mb-2 text-center">{isDraftMode ? 'Draft a Message' : 'Analyze a Message'}</h1>
         <p className="text-gray-500 dark:text-gray-400 max-w-3xl mx-auto text-center mb-8">{isDraftMode ? "Clearly defining your intent helps the AI create a more accurate translation." : "Explaining the situation and your interpretation helps the AI understand the communication gap."}</p>
         
-        {/* The main form is unchanged */}
         <form onSubmit={handleSubmit} className="space-y-8">
             <div className={`grid gap-6 ${isDraftMode ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
                 {isDraftMode ? (
-                    <>
-                        <IOBox title="What I Mean (Intent)" required textValue={context}><textarea value={context} onChange={(e) => setContext(e.target.value)} placeholder="What is the goal of your message?" required /></IOBox>
-                        <IOBox title="What I Wrote (Draft)" required textValue={text}><textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="What are your key points or raw thoughts?" required /></IOBox>
-                    </>
+                    <> <IOBox title="What I Mean (Intent)" required textValue={context}><textarea value={context} onChange={(e) => setContext(e.target.value)} placeholder="What is the goal of your message?" required /></IOBox> <IOBox title="What I Wrote (Draft)" required textValue={text}><textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="What are your key points or raw thoughts?" required /></IOBox> </>
                 ) : (
-                    <>
-                        <IOBox title="What They Wrote" required textValue={text}><textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste the message you received." required /></IOBox>
-                        <IOBox title="What's the Situation? (Context)" textValue={analyzeContext}><textarea value={analyzeContext} onChange={(e) => setAnalyzeContext(e.target.value)} placeholder="e.g., This is my boss, the project is late..." /></IOBox>
-                        <IOBox title="How I Heard It" required textValue={interpretation}><textarea value={interpretation} onChange={(e) => setInterpretation(e.target.value)} placeholder="How did this message make you feel or what do you think it means?" required /></IOBox>
-                    </>
+                    <> <IOBox title="What They Wrote" required textValue={text}><textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste the message you received." required /></IOBox> <IOBox title="What's the Situation? (Context)" textValue={analyzeContext}><textarea value={analyzeContext} onChange={(e) => setAnalyzeContext(e.target.value)} placeholder="e.g., This is my boss, the project is late..." /></IOBox> <IOBox title="How I Heard It" required textValue={interpretation}><textarea value={interpretation} onChange={(e) => setInterpretation(e.target.value)} placeholder="How did this message make you feel or what do you think it means?" required /></IOBox> </>
                 )}
             </div>
             <div className="p-6 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 space-y-6">
@@ -220,14 +181,7 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                     <SelectorGroup label="Audience's Style"><RadioPillGroup name="receiver" value={receiverStyle} onChange={setReceiverStyle} options={['direct', 'indirect']} /></SelectorGroup>
                 </div>
                 <div className="text-center"><label className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 cursor-pointer"><input type="checkbox" checked={isAdvancedMode} onChange={() => setIsAdvancedMode(!isAdvancedMode)} className="w-4 h-4 text-teal-600 bg-gray-700 border-gray-600 rounded focus:ring-teal-500" />Show Advanced Options</label></div>
-                {isAdvancedMode && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 pt-4 border-t border-gray-300 dark:border-gray-700">
-                        <SelectorGroup label="My Neurotype" tooltip="Autism: May prefer direct, literal language. ADHD: May communicate in non-linear ways."><RadioPillGroup name="sender-nt" value={senderNeurotype} onChange={setSenderNeurotype} options={neurotypes} /></SelectorGroup>
-                        <SelectorGroup label="Audience's Neurotype"><RadioPillGroup name="receiver-nt" value={receiverNeurotype} onChange={setReceiverNeurotype} options={neurotypes} /></SelectorGroup>
-                        <SelectorGroup label="My Generation" tooltip="Gen Z: ~1997-2012, Millennial: ~1981-1996, Gen X: ~1965-1980, Boomer: ~1946-1964"><RadioPillGroup name="sender-gen" value={senderGeneration} onChange={setSenderGeneration} options={generations} /></SelectorGroup>
-                        <SelectorGroup label="Audience's Generation"><RadioPillGroup name="receiver-gen" value={receiverGeneration} onChange={setReceiverGeneration} options={generations} /></SelectorGroup>
-                    </div>
-                )}
+                {isAdvancedMode && ( <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 pt-4 border-t border-gray-300 dark:border-gray-700"> <SelectorGroup label="My Neurotype" tooltip="Autism: May prefer direct, literal language. ADHD: May communicate in non-linear ways."><RadioPillGroup name="sender-nt" value={senderNeurotype} onChange={setSenderNeurotype} options={neurotypes} /></SelectorGroup> <SelectorGroup label="Audience's Neurotype"><RadioPillGroup name="receiver-nt" value={receiverNeurotype} onChange={setReceiverNeurotype} options={neurotypes} /></SelectorGroup> <SelectorGroup label="My Generation" tooltip="Gen Z: ~1997-2012, Millennial: ~1981-1996, Gen X: ~1965-1980, Boomer: ~1946-1964"><RadioPillGroup name="sender-gen" value={senderGeneration} onChange={setSenderGeneration} options={generations} /></SelectorGroup> <SelectorGroup label="Audience's Generation"><RadioPillGroup name="receiver-gen" value={receiverGeneration} onChange={setReceiverGeneration} options={generations} /></SelectorGroup> </div> )}
             </div>
             <div className="flex justify-center items-center gap-4">
                  <button type="submit" className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 disabled:bg-gray-500 dark:disabled:bg-gray-600 disabled:cursor-not-allowed disabled:transform-none" disabled={loading}>
@@ -249,50 +203,21 @@ export const TranslatePage = ({ mode = 'draft' }) => {
                     {verboseExplanation && ( <div className="mt-4 p-4 bg-gray-200 dark:bg-gray-900/70 rounded-lg"> <h4 className="font-bold text-terracotta-500 dark:text-terracotta-400 mb-2">Deeper Dive</h4> <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: verboseExplanation }} /> </div> )}
                     <Feedback type="explanation" onSubmit={(data) => handleFeedbackSubmit(data, 'explanation')} isSuccess={feedbackSuccess.explanation} />
                 </div>
-
                 <div className="relative bg-gray-100 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex flex-col">
                     <CopyButton textToCopy={isEditing ? editedResponse : aiResponse.response} />
                     <h3 className="text-lg font-bold font-serif text-teal-600 dark:text-teal-400 mb-2">{isDraftMode ? "The Translation (Suggested Draft)" : "The Translation (Suggested Response)"}</h3>
-                    
-                    {/* --- NEW: Conditional rendering for Edit Mode --- */}
-                    {isEditing ? (
-                       <EditableContent html={editedResponse} onChange={setEditedResponse} />
-                        ) : (
-                        <div
-                            className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow"
-                            dangerouslySetInnerHTML={{ __html: aiResponse.response }}
-                        />
-                        )}
-
+                    {isEditing ? (<EditableContent html={editedResponse} onChange={setEditedResponse} />) : (<div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow" dangerouslySetInnerHTML={{ __html: aiResponse.response }} />)}
                     <div className="mt-4 flex flex-wrap gap-2 items-center">
-                        {!isEditing ? (
-                            <button onClick={handleEditClick} className="flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:underline">
-                                <Edit className="h-4 w-4" /> Edit this translation
-                            </button>
-                        ) : (
+                        {!isEditing ? (<button onClick={handleEditClick} className="flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:underline"> <Edit className="h-4 w-4" /> Edit this translation </button>) : (
                             <>
-                                <button onClick={handleSaveEdit} disabled={isSavingEdit} className="flex items-center gap-1 text-sm px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-500">
-                                    <Save className="h-4 w-4" /> {isSavingEdit ? 'Saving...' : 'Save'}
-                                </button>
-                                <button onClick={() => setIsEditing(false)} className="flex items-center gap-1 text-sm px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600">
-                                    <X className="h-4 w-4" /> Cancel
-                                </button>
-                                <button onClick={handleReanalyzeClick} disabled={isReanalyzing} className="flex items-center gap-1 text-sm text-purple-600 dark:text-purple-400 hover:underline">
-                                    <RefreshCw className={`h-4 w-4 ${isReanalyzing ? 'animate-spin' : ''}`} /> {isReanalyzing ? 'Analyzing...' : 'Re-analyze My Edit'}
-                                </button>
+                                <button onClick={handleSaveEdit} disabled={isSavingEdit} className="flex items-center gap-1 text-sm px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-500"> <Save className="h-4 w-4" /> {isSavingEdit ? 'Saving...' : 'Save'} </button>
+                                <button onClick={() => setIsEditing(false)} className="flex items-center gap-1 text-sm px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600"> <X className="h-4 w-4" /> Cancel </button>
+                                <button onClick={handleReanalyzeClick} disabled={isReanalyzing || !editSaveSuccess} className="flex items-center gap-1 text-sm text-purple-600 dark:text-purple-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed" title={!editSaveSuccess ? "You must save your edit first" : ""}> <RefreshCw className={`h-4 w-4 ${isReanalyzing ? 'animate-spin' : ''}`} /> {isReanalyzing ? 'Analyzing...' : 'Re-analyze My Edit'} </button>
                             </>
                         )}
                     </div>
-                    {editSaveSuccess && <p className="text-sm text-green-600 dark:text-green-400 mt-2">Thank you! Your feedback will help improve the AI.</p>}
-
-                    {reanalysisResult && (
-                         <div className="mt-4 p-4 bg-gray-200 dark:bg-gray-900/70 rounded-lg">
-                            <h4 className="font-bold text-terracotta-500 dark:text-terracotta-400 mb-2">Analysis of Your Edit</h4>
-                           <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: reanalysisResult }} />
-                           {reanalysisSaveSuccess && <p className="text-xs text-gray-500 mt-2">✓ Analysis saved for AI training.</p>}
-                        </div>
-                    )}
-                    
+                    {editSaveSuccess && <p className="text-sm text-green-600 dark:text-green-400 mt-2">Thank you! Your feedback has been saved.</p>}
+                    {reanalysisResult && ( <div className="mt-4 p-4 bg-gray-200 dark:bg-gray-900/70 rounded-lg"> <h4 className="font-bold text-terracotta-500 dark:text-terracotta-400 mb-2">Analysis of Your Edit</h4> <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: reanalysisResult }} /> </div> )}
                     {!isEditing && <Feedback type="response" onSubmit={(data) => handleFeedbackSubmit(data, 'response')} isSuccess={feedbackSuccess.response} />}
                 </div>
             </div>
@@ -301,7 +226,20 @@ export const TranslatePage = ({ mode = 'draft' }) => {
     );
 };
 
-// --- Helper Components (CopyButton added, IOBox modified) ---
+const EditableContent = ({ html, onChange }) => {
+    const elementRef = useRef(null);
+    useEffect(() => {
+        if (elementRef.current && html !== elementRef.current.innerHTML) {
+            elementRef.current.innerHTML = html;
+        }
+    }, [html]);
+    const handleInput = (event) => {
+        onChange(event.currentTarget.innerHTML);
+    };
+    return (
+        <div ref={elementRef} contentEditable={true} suppressContentEditableWarning={true} onInput={handleInput} className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow p-2 ring-2 ring-teal-500 rounded-md bg-white dark:bg-gray-900"/>
+    );
+};
 
 const CopyButton = ({ textToCopy }) => {
     const [isCopied, setIsCopied] = useState(false);
@@ -354,30 +292,3 @@ const RadioPillGroup = ({ name, value, onChange, options }) => (
         ))}
     </div>
 );
-
-// --- NEW: Helper Component to manage contentEditable correctly ---
-const EditableContent = ({ html, onChange }) => {
-    const elementRef = useRef(null);
-
-    // This effect updates the div only when the initial html prop changes from the parent,
-    // not on every single keystroke.
-    useEffect(() => {
-        if (elementRef.current && html !== elementRef.current.innerHTML) {
-            elementRef.current.innerHTML = html;
-        }
-    }, [html]);
-
-    const handleInput = (event) => {
-        onChange(event.currentTarget.innerHTML);
-    };
-
-    return (
-        <div
-            ref={elementRef}
-            contentEditable={true}
-            suppressContentEditableWarning={true}
-            onInput={handleInput}
-            className="prose prose-sm sm:prose-base dark:prose-invert max-w-none flex-grow p-2 ring-2 ring-teal-500 rounded-md bg-white dark:bg-gray-900"
-        />
-    );
-};
