@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 
-// This configuration will be moved to a central place later
 const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 const API_BASE_URL = rawApiUrl.replace(/\/$/, "");
+// --- NEW: Read the version from the environment variable ---
+const appVersion = import.meta.env.VITE_APP_VERSION || '3.0.2';
 
 export const Footer = () => {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
-    const version = "3.0.2"; // --- UPDATED VERSION ---
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage('Subscribing...');
@@ -35,7 +35,8 @@ export const Footer = () => {
                 <div className="md:flex md:justify-between">
                     <div className="mb-6 md:mb-0">
                         <p className="text-sm text-gray-500 dark:text-gray-400">&copy; {new Date().getFullYear()} Hearthside Works, LLC. All Rights Reserved.</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Beta v{version}</p>
+                        {/* --- UPDATED: Now uses the dynamic version variable --- */}
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Beta v{appVersion}</p>
                         <a href="#/commitments" className="text-sm text-gray-500 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400">Our Commitments (Privacy & Accessibility)</a>
                     </div>
                     <div>
