@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-// CRITICAL FIX: Changing named imports (which caused the build error) 
-// to default imports for these main app components.
-import AppLayout from './AppLayout'; 
-import HomePage from './HomePage'; 
-import TranslatePage from './TranslatePage'; 
-import ChatPage from './ChatPage'; 
+// CRITICAL FIX: Reverting imports to NAMED exports (curly braces) 
+// for the main app components, as indicated by the build error.
+import { AppLayout } from './AppLayout'; 
+import { HomePage } from './HomePage'; 
+import { TranslatePage } from './TranslatePage'; 
+import { ChatPage } from './ChatPage'; 
 
 // Static pages correctly use NAMED exports from the StaticPages.jsx file.
 import { HowToUsePage, ChangeLogPage } from './StaticPages';
@@ -39,6 +39,7 @@ const ClarityCoachAppRoutes = () => {
     const toggleTheme = () => setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
 
     return (
+        {/* Pass the correct props to AppLayout */}
         <AppLayout theme={theme} toggleTheme={toggleTheme}>
             <Routes>
                 {/* /app/ - Should land on the core app's home page (Mode Cards) */}
