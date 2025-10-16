@@ -10,7 +10,7 @@ import TranslatePage from './TranslatePage';
 import ChatPage from './ChatPage'; 
 
 // Static pages use NAMED exports from the StaticPages.jsx file.
-import { HowToUsePage, ChangeLogPage } from './StaticPages';
+import { HowToUsePage, ChangeLogPage, RoadmapPage } from './StaticPages'; // <-- ADDED RoadmapPage
 
 // Simple 404 component for failed nested routes
 const NotFoundPage = () => (
@@ -43,13 +43,15 @@ const ClarityCoachAppRoutes = () => {
                 {/* /app/ - Should land on the core app's home page (Mode Cards) */}
                 <Route index element={<HomePage />} />
                 
-                {/* Core Functional Pages */}
-                <Route path="translate/*" element={<TranslatePage />} /> 
+                {/* Core Functional Pages - Passing 'mode' prop to TranslatePage */}
+                <Route path="translate/draft" element={<TranslatePage mode="draft" />} /> {/* Explicit Draft route */}
+                <Route path="translate/analyze" element={<TranslatePage mode="analyze" />} /> {/* Explicit Analyze route */}
                 <Route path="chat" element={<ChatPage />} />
                 
                 {/* App-Specific Static Pages that are nested under /app */}
                 <Route path="how-to-use" element={<HowToUsePage />} />
                 <Route path="changelog" element={<ChangeLogPage />} />
+                <Route path="roadmap" element={<RoadmapPage />} /> {/* <-- ADDED ROUTE */}
 
                 {/* Catch-all for failed nested routes */}
                 <Route path="*" element={<NotFoundPage />} />

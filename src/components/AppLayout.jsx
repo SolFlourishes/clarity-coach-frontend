@@ -1,3 +1,5 @@
+// D:\Projects\clarity-coach-frontend\src\components\AppLayout.jsx
+
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import HearthArch from './HearthArch';
@@ -14,6 +16,7 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
     // Reusable navigation links component for both desktop and mobile
     const navLinks = (
         <>
+            {/* NavLink to the core app's homepage - /app */}
             <NavLink 
                 to="/app" 
                 className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`} 
@@ -22,6 +25,7 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
             >
                 Home
             </NavLink>
+            {/* NavLink to the Translate (Draft) mode - /app/translate/draft */}
             <NavLink 
                 to="/app/translate/draft" 
                 className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}
@@ -29,6 +33,15 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
             >
                 Translate
             </NavLink>
+             {/* NavLink to the Analyze mode - /app/translate/analyze */}
+            <NavLink 
+                to="/app/translate/analyze" 
+                className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}
+                onClick={() => setIsMenuOpen(false)}
+            >
+                Analyze
+            </NavLink>
+            {/* NavLink to the Chat Coach mode - /app/chat */}
             <NavLink 
                 to="/app/chat" 
                 className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}
@@ -43,13 +56,22 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
                     More
                     <ChevronDown className="w-4 h-4 ml-1" />
                 </span>
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity invisible group-hover:visible z-20">
+                <div 
+                    className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity invisible group-hover:visible z-20"
+                    onMouseDown={(e) => e.stopPropagation()}
+                >
+                    {/* --- Company Pages (Root Routes) --- */}
                     <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">About Hearthside</Link>
-                    <Link to="/app/how-to-use" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">How to Use</Link>
-                    <Link to="/roadmap" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Roadmap</Link>
-                    <Link to="/app/changelog" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Change Log</Link>
-                    <Link to="/credits" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Credits</Link>
                     <Link to="/commitments" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Our Commitments</Link>
+                    <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Contact Us</Link>
+                    <Link to="/credits" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Credits</Link>
+
+                    <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                    
+                    {/* --- App-Specific Static Pages (Nested Routes) --- */}
+                    <Link to="/app/how-to-use" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">How to Use</Link>
+                    <Link to="/app/roadmap" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Roadmap</Link>
+                    <Link to="/app/changelog" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Change Log</Link>
                 </div>
             </div>
         </>
@@ -60,10 +82,10 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
             <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
-                        {/* Logo and Brand Name */}
-                        <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+                        {/* Logo and Brand Name - FIX: Links to App Home when inside the App */}
+                        <Link to="/app" className="flex items-center gap-2 flex-shrink-0">
                             <HearthArch className="w-8 h-4 text-brand-terracotta" />
-                            <span className="font-serif text-xl font-bold text-brand-charcoal dark:text-white">Hearthside Works</span>
+                            <span className="font-serif text-xl font-bold text-brand-charcoal dark:text-white">Clarity Coach</span>
                         </Link>
 
                         {/* Desktop Navigation */}
@@ -102,4 +124,3 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
 };
 
 export default AppLayout;
-
