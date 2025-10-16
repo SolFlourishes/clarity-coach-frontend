@@ -3,14 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-// CRITICAL FIX: Changing all non-static page imports to DEFAULT imports.
-// This resolves the AppLayout error and unifies how main components are imported.
+// CRITICAL FIX: Unifying imports to consistently use DEFAULT imports for main components.
 import AppLayout from './AppLayout'; 
 import HomePage from './HomePage'; 
 import TranslatePage from './TranslatePage'; 
 import ChatPage from './ChatPage'; 
 
-// Static pages correctly use NAMED exports from the StaticPages.jsx file.
+// Static pages use NAMED exports from the StaticPages.jsx file.
 import { HowToUsePage, ChangeLogPage } from './StaticPages';
 
 // Simple 404 component for failed nested routes
@@ -39,7 +38,6 @@ const ClarityCoachAppRoutes = () => {
     const toggleTheme = () => setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
 
     return (
-        {/* Pass the correct props to AppLayout */}
         <AppLayout theme={theme} toggleTheme={toggleTheme}>
             <Routes>
                 {/* /app/ - Should land on the core app's home page (Mode Cards) */}

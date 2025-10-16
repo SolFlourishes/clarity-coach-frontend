@@ -41,7 +41,6 @@ const MODES = [
 
 
 const HomePage = () => {
-    // Assuming AppLayout handles the outer container (bg-brand-cream)
     return (
         <div className="p-4 sm:p-8 max-w-6xl mx-auto">
             <header className="mb-10 text-center">
@@ -50,10 +49,11 @@ const HomePage = () => {
                     Clarity Coach
                 </h1>
                 <p className="mt-2 text-lg font-sans text-brand-charcoal/80">
-                    Your personal guide to communication, based on the ethos of **"Hear Me, See Me, Know Me."**
+                    Your personal guide to communication, built on the metaphor of a safe, central hearth.
                 </p>
             </header>
 
+            {/* The redesigned mode cards */}
             <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {MODES.map((mode, index) => (
                     <ModeCard key={index} mode={mode} />
@@ -62,9 +62,9 @@ const HomePage = () => {
             
             {/* Link back to the main company site */}
             <div className="mt-12 text-center">
-                <Link to="/about">
+                <Link to="/">
                     <Button variant="ghost" className="text-brand-charcoal/70 hover:bg-brand-cream/50">
-                        Learn more about Hearthside Works <ArrowRight className="ml-2 h-4 w-4" />
+                        Explore Hearthside Works <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                 </Link>
             </div>
@@ -72,4 +72,5 @@ const HomePage = () => {
     );
 };
 
+// CRITICAL FIX: Ensure this export type matches the import in ClarityCoachAppRoutes.jsx
 export default HomePage;

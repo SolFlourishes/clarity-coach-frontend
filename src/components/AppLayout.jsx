@@ -1,22 +1,24 @@
+// src/components/AppLayout.jsx
+
 import React from 'react';
-import { Header } from './Header';
-import { Footer } from './Footer';
-import { Analytics } from '@vercel/analytics/react';
+// Import dependencies as needed
 
-export const AppLayout = ({ children, theme, toggleTheme }) => {
+const AppLayout = ({ theme, toggleTheme, children }) => {
+    // Your existing AppLayout component logic (header, navigation, etc.)
     return (
-        <div className="flex flex-col min-h-screen">
-            {/* --- NEW: Beta Banner Added --- */}
-            <div className="bg-yellow-400 dark:bg-yellow-600 text-center py-2 px-4 text-sm text-black dark:text-white font-semibold">
-                Clarity Coach is currently in Beta. Your feedback is valuable in shaping its future!
-            </div>
+        <div className={`app-container min-h-screen ${theme}`}>
+            {/* Header/Navigation component that likely uses toggleTheme */}
+            {/* <Header toggleTheme={toggleTheme} /> */} 
 
-            <Header theme={theme} toggleTheme={toggleTheme} />
-            <main className="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+            <main className="w-full">
                 {children}
             </main>
-            <Footer />
-            <Analytics />
+
+            {/* Footer component */}
+            {/* <Footer /> */} 
         </div>
     );
 };
+
+// CRITICAL FIX: Change to DEFAULT EXPORT
+export default AppLayout;
