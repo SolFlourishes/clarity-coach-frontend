@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// 1. Imports for the Main Site Pages (New or Moved)
+// 1. Core Router Components
 // Assuming CompanyPage.jsx is in src/pages/
 import CompanyPage from "./pages/CompanyPage"; 
-// Assuming this wrapper for the app's internal routes is in src/components/
+// Assuming the internal app router wrapper is in src/components/
 import ClarityCoachAppRoutes from "./components/ClarityCoachAppRoutes"; 
 
 // 2. Static Pages moving to the main site (Hearthside Works branding)
-// NOTE: These are NAMED exports from the StaticPages.jsx file you provided,
+// These are the NAMED exports from the StaticPages.jsx file you provided, 
 // which is assumed to be in src/components/
 import { AboutPage, RoadmapPage, CreditsPage, CommitmentsPage } from './components/StaticPages';
 
@@ -28,8 +28,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         {/* ========================================================== */}
-        {/* HEARTHSIDE WORKS: MAIN SITE ROUTES (Cream Background) */}
-        {/* These pages define the company brand and general policies. */}
+        {/* HEARTHSIDE WORKS: MAIN SITE ROUTES (Company Pages) */}
         {/* ========================================================== */}
         <Route path="/" element={<CompanyPage />} />
         <Route path="/about" element={<AboutPage />} />
@@ -39,7 +38,7 @@ const App = () => {
 
         {/* ========================================================== */}
         {/* CLARITY COACH: NESTED APP ROUTES (/app/*) */}
-        {/* This path directs to the internal app router and layout. */}
+        {/* This route uses the custom layout and theme logic */}
         {/* ========================================================== */}
         <Route path="/app/*" element={<ClarityCoachAppRoutes />} />
         
