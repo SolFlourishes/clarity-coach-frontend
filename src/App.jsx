@@ -7,6 +7,9 @@ import CompanyPage from "./pages/CompanyPage";
 // Assuming the internal app router wrapper is in src/components/
 import ClarityCoachAppRoutes from "./components/ClarityCoachAppRoutes"; 
 
+// NEW IMPORT: Contact Page
+import ContactPage from "./pages/ContactPage";
+
 // 2. Static Pages moving to the main site (Hearthside Works branding)
 // These are the NAMED exports from the StaticPages.jsx file you provided, 
 // which is assumed to be in src/components/
@@ -35,6 +38,7 @@ const App = () => {
         <Route path="/roadmap" element={<RoadmapPage />} />
         <Route path="/credits" element={<CreditsPage />} />
         <Route path="/commitments" element={<CommitmentsPage />} />
+        <Route path="/contact" element={<ContactPage />} /> {/* <-- NEW CONTACT ROUTE */}
 
         {/* ========================================================== */}
         {/* CLARITY COACH: NESTED APP ROUTES (/app/*) */}
