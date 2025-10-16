@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AboutPage } from '../components/StaticPages'; 
-import CompanyLayout from '../components/CompanyLayout';
+
 
 const MissionPage = () => (
     <CompanyLayout>

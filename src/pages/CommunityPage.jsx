@@ -1,7 +1,6 @@
 // src/pages/CommunityPage.jsx (Placeholder)
 
 import React from 'react';
-import CompanyLayout from '../components/CompanyLayout';
 
 const CommunityPage = () => (
     <CompanyLayout>

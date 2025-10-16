@@ -1,7 +1,6 @@
 // src/pages/SupportPage.jsx (Placeholder)
 
 import React from 'react';
-import CompanyLayout from '../components/CompanyLayout';
 import { Link } from 'react-router-dom';
 
 const SupportPage = () => (

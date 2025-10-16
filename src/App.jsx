@@ -22,29 +22,26 @@ function App() {
     return (
         <Routes>
             
-            {/* 1. MAIN COMPANY WEBSITE ROUTES */}
-            <Route index element={<CompanyLandingPage />} /> 
+            {/* 1. MAIN COMPANY WEBSITE ROUTES - Wrap all top-level content in CompanyLayout */}
+            <Route element={<CompanyLayout />}> 
+                
+                {/* Index Route - Uses the Company Landing Page content */}
+                <Route index element={<CompanyLandingPage />} /> 
 
-            {/* Dedicated Static Pages, wrapped in the new Company Layout */}
-            <Route path="/mission" element={<CompanyLayout><MissionPage /></CompanyLayout>} />
-            <Route path="/community" element={<CompanyLayout><CommunityPage /></CompanyLayout>} />
-            <Route path="/support" element={<CompanyLayout><SupportPage /></CompanyLayout>} />
-            <Route path="/contact" element={<CompanyLayout><ContactPage /></CompanyLayout>} />
-            
-            {/* Reusing content from StaticPages, wrapped in the new layout */}
-            <Route path="/commitments" element={<CompanyLayout><CommitmentsPage /></CompanyLayout>} />
-            <Route path="/credits" element={<CompanyLayout><CreditsPage /></CompanyLayout>} />
+                {/* Dedicated Static Pages (Company-level) */}
+                <Route path="/mission" element={<MissionPage />} />
+                <Route path="/community" element={<CommunityPage />} />
+                <Route path="/support" element={<SupportPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/commitments" element={<CommitmentsPage />} />
+                <Route path="/credits" element={<CreditsPage />} />
+            </Route>
             
             {/* 2. CLARITY COACH APPLICATION ROUTES */}
             <Route path="/app/*" element={<ClarityCoachAppRoutes />} />
 
-            {/* 3. FALLBACK 404 Route */}
-            <Route path="*" element={
-                <div className="flex flex-col items-center justify-center min-h-screen bg-brand-cream dark:bg-gray-900">
-                    <h1 className="text-5xl font-serif text-brand-terracotta mb-4">404 - Page Not Found</h1>
-                    <Link to="/" className="text-brand-teal hover:underline">Return to Home</Link>
-                </div>
-            } />
+            {/* 3. FALLBACK 404 Route - (Wrap in a default layout if desired, here just raw text) */}
+            {/* ... (rest of 404 route) ... */}
         </Routes>
     );
 }

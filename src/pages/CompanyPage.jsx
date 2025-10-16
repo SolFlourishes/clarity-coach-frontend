@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button'; 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight } from 'lucide-react';
-import CompanyLayout from '../components/CompanyLayout'; // NEW IMPORT
 
 const CompanyLandingPage = () => {
     return (
