@@ -1,35 +1,75 @@
-import React, { useState, useEffect } from 'react';
-import { ModeCard } from './ModeCard';
+// src/components/HomePage.jsx
 
-export const HomePage = () => {
-    // FIX #2: Inspirational Quotes Added
-    const quotes = [
-        { text: "The single biggest problem in communication is the illusion that it has taken place.", author: "George Bernard Shaw" },
-        { text: "To effectively communicate, we must realize that we are all different in the way we perceive the world and use this understanding as a guide to our communication with others.", author: "Tony Robbins" },
-        { text: "The most important thing in communication is hearing what isn't said.", author: "Peter Drucker" }
-    ];
-    const [quote, setQuote] = useState({ text: "", author: "" });
-    useEffect(() => {
-        setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-    }, []);
+import React from 'react';
+import { Link } from 'react-router-dom';
+import ModeCard from './ModeCard'; 
+import { ArrowRight, MessageSquareText, Lightbulb, TrendingUp } from 'lucide-react';
+import HearthArch from './HearthArch';
+import { Button } from '@/components/ui/button';
 
+// --- Mode Card Configuration Data ---
+const MODES = [
+    {
+        title: "Translate",
+        path: "/app/translate/draft",
+        description: "Rephrase complex thoughts into clear, intentional messages for any audience.",
+        // Maps to Tertiary Accent (Purple) - Insightful
+        borderColor: "border-brand-purple",
+        icon: <MessageSquareText className="h-6 w-6" />,
+        iconBgClass: "bg-brand-purple"
+    },
+    {
+        title: "Analyze",
+        path: "/app/translate/analyze",
+        description: "Decode messages you receive to understand the sender's likely intent and context.",
+        // Maps to Primary Accent (Teal) - Clear and Confident
+        borderColor: "border-brand-teal",
+        icon: <Lightbulb className="h-6 w-6" />,
+        iconBgClass: "bg-brand-teal"
+    },
+    {
+        title: "Chat Coach",
+        path: "/app/chat",
+        description: "Practice difficult conversations and receive real-time, empathetic guidance.",
+        // Maps to Secondary Accent (Terracotta) - Warmth and Human connection
+        borderColor: "border-brand-terracotta",
+        icon: <TrendingUp className="h-6 w-6" />,
+        iconBgClass: "bg-brand-terracotta"
+    },
+];
+// ------------------------------------
+
+
+const HomePage = () => {
+    // Assuming AppLayout handles the outer container (bg-brand-cream)
     return (
-        <div className="text-center py-10 md:py-20">
-            <h1 className="text-4xl md:text-6xl font-extrabold font-serif text-gray-900 dark:text-white mb-4 leading-tight">
-                Welcome to the <span className="text-teal-500 dark:text-teal-400">Clarity Coach</span>
-            </h1>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-                A tool by <strong className="font-semibold text-terracotta-500">Hearthside Works</strong> to help you bridge communication gaps, say what you mean, and understand what others truly mean.
-            </p>
-            <div className="max-w-3xl mx-auto my-12 p-6 bg-gray-100 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
-                <blockquote className="text-xl italic text-gray-700 dark:text-gray-300">"{quote.text}"</blockquote>
-                <cite className="block text-right mt-4 text-gray-500 dark:text-gray-400">- {quote.author}</cite>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                <ModeCard title="Draft a Message" description="Translate your intent into a clear message tailored for any audience." linkTo="#/translate/draft" />
-                <ModeCard title="Analyze a Message" description="Decode the likely intent behind a message you've received." linkTo="#/translate/analyze" />
-                <ModeCard title="Chat with the Coach" description="Get real-time advice on navigating a tricky conversation." linkTo="#/chat" />
+        <div className="p-4 sm:p-8 max-w-6xl mx-auto">
+            <header className="mb-10 text-center">
+                <HearthArch className="w-16 h-8 text-brand-terracotta mx-auto mb-2" />
+                <h1 className="text-4xl font-serif text-brand-charcoal font-bold">
+                    Clarity Coach
+                </h1>
+                <p className="mt-2 text-lg font-sans text-brand-charcoal/80">
+                    Your personal guide to communication, based on the ethos of **"Hear Me, See Me, Know Me."**
+                </p>
+            </header>
+
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {MODES.map((mode, index) => (
+                    <ModeCard key={index} mode={mode} />
+                ))}
+            </section>
+            
+            {/* Link back to the main company site */}
+            <div className="mt-12 text-center">
+                <Link to="/about">
+                    <Button variant="ghost" className="text-brand-charcoal/70 hover:bg-brand-cream/50">
+                        Learn more about Hearthside Works <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                </Link>
             </div>
         </div>
     );
 };
+
+export default HomePage;

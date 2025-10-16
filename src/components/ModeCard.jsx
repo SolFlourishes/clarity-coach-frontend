@@ -1,8 +1,35 @@
-import React from 'react';
+// src/components/ModeCard.jsx
 
-export const ModeCard = ({ title, description, linkTo }) => (
-    <a href={linkTo} className="block bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-teal-500 dark:hover:border-teal-400 hover:-translate-y-1 transition-transform shadow-lg">
-        <h3 className="text-xl font-bold font-serif text-teal-600 dark:text-teal-400 mb-2">{title}</h3>
-        <p className="text-gray-500 dark:text-gray-400">{description}</p>
-    </a>
-);
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { ArrowRight } from 'lucide-react';
+
+// This component now accepts a 'mode' object which contains the styling specifics
+const ModeCard = ({ mode }) => {
+    // Determine the class for the accent border at the top
+    const borderClass = `border-t-4 ${mode.borderColor}`; 
+
+    return (
+        <Link to={mode.path} className="block h-full transition-shadow duration-300 hover:shadow-xl">
+            <Card className={`h-full ${borderClass} rounded-t-none shadow-lg border-b-0 border-l-0 border-r-0`}>
+                <CardContent className="p-6">
+                    <div className={`w-12 h-12 ${mode.iconBgClass} text-white flex items-center justify-center rounded-full mb-4`}>
+                        {mode.icon}
+                    </div>
+                    <CardTitle className="text-xl font-serif text-brand-charcoal">
+                        {mode.title}
+                    </CardTitle>
+                    <p className="mt-2 text-sm text-brand-charcoal/70 font-sans">
+                        {mode.description}
+                    </p>
+                    <div className="mt-4 flex items-center text-brand-teal font-semibold text-sm">
+                        Go to Mode <ArrowRight className="ml-1 h-4 w-4" />
+                    </div>
+                </CardContent>
+            </Card>
+        </Link>
+    );
+};
+
+export default ModeCard;
