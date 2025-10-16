@@ -1,50 +1,58 @@
+// src/components/ClarityCoachAppRoutes.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { AppLayout } from './AppLayout';
-import { HomePage } from './HomePage';
-import { TranslatePage } from './TranslatePage';
-import { ChatPage } from './ChatPage';
+
+// CRITICAL FIX: Changing named imports (which caused the build error) 
+// to default imports for these main app components.
+import AppLayout from './AppLayout'; 
+import HomePage from './HomePage'; 
+import TranslatePage from './TranslatePage'; 
+import ChatPage from './ChatPage'; 
+
+// Static pages correctly use NAMED exports from the StaticPages.jsx file.
 import { HowToUsePage, ChangeLogPage } from './StaticPages';
 
-// Assuming your NotFoundPage is also defined or needs to be created
+// Simple 404 component for failed nested routes
 const NotFoundPage = () => (
     <div className="flex flex-col items-center justify-center p-12 h-full">
-        <h1 className="text-4xl font-serif text-brand-terracotta mb-4">404 - Page Not Found</h1>
-        <p className="text-lg">The path you requested does not exist within the Clarity Coach application.</p>
+        <h1 className="text-4xl font-serif text-brand-terracotta mb-4">404 - App Page Not Found</h1>
+        <p className="text-lg">The requested feature page does not exist within the Clarity Coach application.</p>
     </div>
 );
 
-// This component handles the theme and the AppLayout wrapper for the *nested* routes only.
+/**
+ * ClarityCoachAppRoutes serves as the entry point for the /app/* routes.
+ * It manages the app-wide state (like theme) and provides the persistent
+ * layout structure (AppLayout) for all internal application pages.
+ */
 const ClarityCoachAppRoutes = () => {
-    // Retain your theme logic as is
+    // Retain your theme management logic
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+    
     useEffect(() => {
+        // Toggle dark/light class on the HTML element
         document.documentElement.classList.toggle('dark', theme === 'dark');
         localStorage.setItem('theme', theme);
     }, [theme]);
 
     const toggleTheme = () => setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
 
-    // We use the <Routes> component *inside* the <AppLayout> wrapper 
-    // This allows the layout (sidebar, header, etc.) to be persistent across these pages.
     return (
         <AppLayout theme={theme} toggleTheme={toggleTheme}>
             <Routes>
-                {/* /app/ */}
+                {/* /app/ - Should land on the core app's home page (Mode Cards) */}
                 <Route index element={<HomePage />} />
                 
-                {/* /app/translate */}
-                {/* Note: If your TranslatePage uses the 'mode' parameter, you handle it inside TranslatePage */}
+                {/* Core Functional Pages */}
                 <Route path="translate/*" element={<TranslatePage />} /> 
-
-                {/* /app/chat */}
                 <Route path="chat" element={<ChatPage />} />
                 
-                {/* App-Specific Static Pages */}
+                {/* App-Specific Static Pages that are nested under /app */}
                 <Route path="how-to-use" element={<HowToUsePage />} />
                 <Route path="changelog" element={<ChangeLogPage />} />
 
-                {/* Catch-all for /app/... routes */}
+                {/* Catch-all for failed nested routes */}
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </AppLayout>
