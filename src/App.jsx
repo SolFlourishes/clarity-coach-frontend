@@ -1,49 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { AppLayout } from './components/AppLayout';
-import { HomePage } from './components/HomePage';
-import { TranslatePage } from './components/TranslatePage';
-import { ChatPage } from './components/ChatPage';
-import { AboutPage, HowToUsePage, RoadmapPage, ChangeLogPage, CreditsPage, CommitmentsPage } from './components/StaticPages';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// 1. Imports for the Main Site Pages (New or Moved)
+// Assuming CompanyPage.jsx is in src/pages/
+import CompanyPage from "./pages/CompanyPage"; 
+// Assuming this wrapper for the app's internal routes is in src/components/
+import ClarityCoachAppRoutes from "./components/ClarityCoachAppRoutes"; 
+
+// 2. Static Pages moving to the main site (Hearthside Works branding)
+// NOTE: These are NAMED exports from the StaticPages.jsx file you provided,
+// which is assumed to be in src/components/
+import { AboutPage, RoadmapPage, CreditsPage, CommitmentsPage } from './components/StaticPages';
+
+// Simple 404 component for the main site routes
+const NotFoundPage = () => (
+    <div className="min-h-screen bg-brand-cream p-12 flex flex-col items-center justify-center">
+        <h1 className="text-6xl font-serif text-brand-terracotta mb-4">404</h1>
+        <h2 className="text-xl font-sans text-brand-charcoal/80">
+            A safe place for gathering was not found at this address.
+        </h2>
+        <a href="/" className="mt-8 text-brand-teal hover:underline font-bold">Return to the Hearth</a>
+    </div>
+);
 
 const App = () => {
-    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
-    useEffect(() => {
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-        localStorage.setItem('theme', theme);
-    }, [theme]);
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* ========================================================== */}
+        {/* HEARTHSIDE WORKS: MAIN SITE ROUTES (Cream Background) */}
+        {/* These pages define the company brand and general policies. */}
+        {/* ========================================================== */}
+        <Route path="/" element={<CompanyPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/roadmap" element={<RoadmapPage />} />
+        <Route path="/credits" element={<CreditsPage />} />
+        <Route path="/commitments" element={<CommitmentsPage />} />
 
-    const toggleTheme = () => setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
-
-    const [page, setPage] = useState(getCurrentPage());
-    function getCurrentPage() {
-        const hash = window.location.hash.slice(1) || '/';
-        return hash;
-    }
-    useEffect(() => {
-        const handleHashChange = () => setPage(getCurrentPage());
-        window.addEventListener('hashchange', handleHashChange);
-        return () => window.removeEventListener('hashchange', handleHashChange);
-    }, []);
-
-    const renderPage = () => {
-        const [path, param] = page.split('/').filter(Boolean);
-        if (path === 'translate' && param) return <TranslatePage mode={param} />;
-        if (path === 'chat') return <ChatPage />;
-
-        const staticPages = {
-            'about': <AboutPage />, 'how-to-use': <HowToUsePage />, 'roadmap': <RoadmapPage />,
-            'changelog': <ChangeLogPage />, 'credits': <CreditsPage />, 'commitments': <CommitmentsPage />,
-        };
-        return staticPages[path] || <HomePage />;
-    };
-
-    return (
-        <div className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen font-sans">
-            <AppLayout theme={theme} toggleTheme={toggleTheme}>
-                {renderPage()}
-            </AppLayout>
-        </div>
-    );
+        {/* ========================================================== */}
+        {/* CLARITY COACH: NESTED APP ROUTES (/app/*) */}
+        {/* This path directs to the internal app router and layout. */}
+        {/* ========================================================== */}
+        <Route path="/app/*" element={<ClarityCoachAppRoutes />} />
+        
+        {/* Catch-all for any other path */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
 export default App;

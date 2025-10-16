@@ -1,35 +1,65 @@
-/* Import Google Fonts per Brand Guide */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Merriweather:wght@400;700;900&display=swap');
-
-/* Tailwind CSS Directives */
+/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Base body styling (Your existing dark default styles) */
-body {
-    background-color: #111827; /* gray-900 */
-    color: #F9FAFB; /* gray-100 */
-    font-family: 'Inter', sans-serif;
-}
-
-/* =================================================== */
-/* --- FIX: Form Input Visibility in Dark Mode --- */
-/* This rule targets all common form elements when the '.dark' class is active */
-/* and forces a legible, contrasting color scheme. */
-/* =================================================== */
-.dark input[type="text"],
-.dark input[type="email"],
-.dark input[type="password"],
-.dark textarea,
-.dark select {
-    /* Set text color to light gray (gray-100 in your config) */
-    color: #F9FAFB !important; 
-
-    /* Set background to a dark color (like gray-700/800 from your config) */
-    background-color: #374151 !important; 
+@layer base {
+  :root {
+    /* 1. Map the 'brand-cream' to the CSS background variable 
+      (Using HSL approximation of #F5F0EB: H=30, S=20%, L=96%) 
+    */
+    --background: 30 20% 96%;
     
-    /* Ensure the border is also visible */
-    border-color: #6b7280 !important;
+    /* 2. Map the 'brand-charcoal' to the CSS foreground variable 
+      (Using HSL approximation of #333333: H=0, S=0%, L=20%) 
+    */
+    --foreground: 0 0% 20%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+
+    /* 3. Map the 'brand-teal' to the primary color (for buttons, etc.)
+      (Using HSL approximation of #1A9A9A: H=180, S=70%, L=35%)
+    */
+    --primary: 180 70% 35%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    
+    /* 4. Map 'brand-purple' to the accent color
+      (Using HSL approximation of #7A5A9A: H=260, S=30%, L=50%)
+    */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 260 30% 50%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 180 70% 35%;
+    --radius: 0.5rem;
+  }
 }
-/* --------------------------------------------------- */
+
+@layer base {
+  * { @apply border-border; }
+  
+  /* 5. Set the global defaults for the entire application 
+    This applies the 'brand-cream' background and 'brand-charcoal' text 
+    to every element by default.
+  */
+  body { 
+    @apply bg-brand-cream text-brand-charcoal; 
+    -webkit-font-smoothing: antialiased; 
+    -moz-osx-font-smoothing: grayscale; 
+  }
+  
+  /* 6. Enforce the 'Lora' serif font for all headings (h1-h6) 
+  */
+  h1, h2, h3, h4, h5, h6 { @apply font-serif; }
+}

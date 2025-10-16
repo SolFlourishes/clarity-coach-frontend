@@ -1,47 +1,58 @@
-    /** @type {import('tailwindcss').Config} */
-    export default {
-      darkMode: 'class',
-      content: [
-        "./index.html",
-        "./src/**/*.{js,ts,jsx,tsx}",
-      ],
-      theme: {
-        extend: {
-          colors: {
-            'teal': {
-              400: '#2dd4bf',
-              500: '#14b8a6',
-              600: '#0d9488', // Primary Action per Brand Guide (approximated from #007B8C)
-              700: '#0f766e',
-              800: '#115e59',
-              900: '#134e4a'
-            },
-            'terracotta': {
-              400: '#f8b49e',
-              500: '#E28A6D', // Secondary Warmth per Brand Guide
-              600: '#d46a4d',
-              700: '#b85133'
-            },
-            'gold': '#FFC72C', // Accent/Growth per Brand Guide
-             gray: {
-              100: '#F9FAFB', // Soft Off-White Background per Brand Guide
-              300: '#d1d5db',
-              400: '#9ca3af',
-              500: '#6b7280',
-              600: '#4b5563',
-              700: '#374151',
-              800: '#1F2937', // Dark Warm Gray Text per Brand Guide
-              900: '#111827'
-            },
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'], // Body & Interface Text per Brand Guide
-            serif: ['Merriweather', 'serif'], // Headings & Titles per Brand Guide
-          },
-        },
+// tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  darkMode: ["class"],
+  content: [
+    './pages/**/*.{js,jsx}',
+    './components/**/*.{js,jsx}',
+    './app/**/*.{js,jsx}',
+    './src/**/*.{js,jsx}',
+  ],
+  prefix: "",
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: { "2xl": "1400px" },
+    },
+    extend: {
+      colors: {
+        'brand-cream': '#F5F0EB',
+        'brand-charcoal': '#333333',
+        'brand-teal': '#1A9A9A',
+        'brand-terracotta': '#C8785A',
+        'brand-purple': '#7A5A9A',
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: { DEFAULT: "hsl(var(--primary))", foreground: "hsl(var(--primary-foreground))" },
+        secondary: { DEFAULT: "hsl(var(--secondary))", foreground: "hsl(var(--secondary-foreground))" },
+        destructive: { DEFAULT: "hsl(var(--destructive))", foreground: "hsl(var(--destructive-foreground))" },
+        muted: { DEFAULT: "hsl(var(--muted))", foreground: "hsl(var(--muted-foreground))" },
+        accent: { DEFAULT: "hsl(var(--accent))", foreground: "hsl(var(--accent-foreground))" },
+        popover: { DEFAULT: "hsl(var(--popover))", foreground: "hsl(var(--popover-foreground))" },
+        card: { DEFAULT: "hsl(var(--card))", foreground: "hsl(var(--card-foreground))" },
       },
-      plugins: [
-        require('@tailwindcss/typography'),
-      ],
-    }
-    
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        sans: ['"Nunito Sans"', 'sans-serif'],
+        serif: ['"Lora"', 'serif'],
+      },
+      keyframes: {
+        "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },
+        "accordion-up": { from: { height: "var(--radix-accordion-content-height)" }, to: { height: "0" } },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+}
