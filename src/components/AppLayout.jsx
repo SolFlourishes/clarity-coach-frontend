@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import HearthArch from './HearthArch';
 import { Button } from '@/components/ui/button';
-import { Sun, Moon, Menu, X } from 'lucide-react';
+import { Sun, Moon, Menu, X, ChevronDown } from 'lucide-react';
 
 const AppLayout = ({ theme, toggleTheme, children }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,6 +11,7 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
     const navLinkClasses = "text-brand-charcoal/80 dark:text-gray-300 hover:text-brand-teal dark:hover:text-brand-teal font-sans font-semibold transition-colors px-3 py-2 rounded-md text-sm";
     const activeNavLinkClasses = "text-brand-teal bg-brand-teal/10 dark:bg-brand-teal/20";
 
+    // Reusable navigation links component for both desktop and mobile
     const navLinks = (
         <>
             <NavLink 
@@ -40,10 +41,10 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
             <div className="relative group">
                 <span className={`${navLinkClasses} cursor-pointer flex items-center`}>
                     More
-                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <ChevronDown className="w-4 h-4 ml-1" />
                 </span>
                 <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity invisible group-hover:visible z-20">
-                    <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">About</Link>
+                    <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">About Hearthside</Link>
                     <Link to="/app/how-to-use" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">How to Use</Link>
                     <Link to="/roadmap" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Roadmap</Link>
                     <Link to="/app/changelog" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Change Log</Link>
@@ -86,7 +87,7 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
                 {/* Mobile Navigation Menu */}
                 {isMenuOpen && (
                     <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-                        <nav className="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col items-center">
+                        <nav className="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col items-start">
                             {navLinks}
                         </nav>
                     </div>
