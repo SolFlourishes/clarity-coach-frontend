@@ -7,7 +7,7 @@ import { Sun, Moon, Menu, X } from 'lucide-react';
 const AppLayout = ({ theme, toggleTheme, children }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // Common classes for navigation links
+    // Common classes for navigation links for consistent styling
     const navLinkClasses = "text-brand-charcoal/80 dark:text-gray-300 hover:text-brand-teal dark:hover:text-brand-teal font-sans font-semibold transition-colors px-3 py-2 rounded-md text-sm";
     const activeNavLinkClasses = "text-brand-teal bg-brand-teal/10 dark:bg-brand-teal/20";
 
@@ -101,3 +101,4 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
 };
 
 export default AppLayout;
+
