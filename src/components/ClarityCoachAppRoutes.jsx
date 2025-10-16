@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-// CRITICAL FIX: Reverting imports to NAMED exports (curly braces) 
-// for the main app components, as indicated by the build error.
-import { AppLayout } from './AppLayout'; 
-import { HomePage } from './HomePage'; 
-import { TranslatePage } from './TranslatePage'; 
-import { ChatPage } from './ChatPage'; 
+// CRITICAL FIX: Changing all non-static page imports to DEFAULT imports.
+// This resolves the AppLayout error and unifies how main components are imported.
+import AppLayout from './AppLayout'; 
+import HomePage from './HomePage'; 
+import TranslatePage from './TranslatePage'; 
+import ChatPage from './ChatPage'; 
 
 // Static pages correctly use NAMED exports from the StaticPages.jsx file.
 import { HowToUsePage, ChangeLogPage } from './StaticPages';
