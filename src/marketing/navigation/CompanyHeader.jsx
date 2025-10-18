@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import HearthArch from '../shared/HearthArch';
-import { Button } from '@/components/ui/button'; 
+import { Button } from '../../apps/clarity-coach/shared/button';
 
 const CompanyHeader = () => {
     return (
