@@ -1,17 +1,18 @@
-// src/marketing/layouts/CompanyLayout.jsx
+// src/marketing/layouts/CompanyLayout.jsx (Temporary Debugging Code)
 
 import React from 'react';
-// FIX: Check these two lines are correct relative to the 'layouts' folder
-import CompanyHeader from '../navigation/CompanyHeader'; 
-import CompanyFooter from '../navigation/CompanyFooter';
+// FIX: Temporarily comment out all dependencies except React
+// import CompanyHeader from '../navigation/CompanyHeader'; 
+// import CompanyFooter from '../navigation/CompanyFooter'; 
 
 const CompanyLayout = ({ children }) => (
-    <div className="flex flex-col min-h-screen bg-brand-cream text-brand-charcoal">
-        <CompanyHeader />
-        <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-            {children}
-        </main>
-        <CompanyFooter />
+    // FIX: Only render minimal structure
+    <div style={{ height: '100vh', backgroundColor: 'lightyellow' }}>
+        <h1>COMPANY LAYOUT IS RENDERING</h1>
+        {/* Comment out header, footer, and children for minimal testing */}
+        {/* <CompanyHeader /> */}
+        {/* <main>{children}</main> */}
+        {/* <CompanyFooter /> */}
     </div>
 );
 
