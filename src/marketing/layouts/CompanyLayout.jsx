@@ -1,8 +1,9 @@
 // src/marketing/layouts/CompanyLayout.jsx
 
 import React from 'react';
-import CompanyHeader from '../navigation/CompanyHeader'; // <-- FIX: Import Header from sibling navigation folder
-import CompanyFooter from '../navigation/CompanyFooter'; // <-- FIX: Import Footer from sibling navigation folder
+// FIX: Correctly import from the navigation folder
+import CompanyHeader from '../navigation/CompanyHeader'; 
+import CompanyFooter from '../navigation/CompanyFooter';
 
 const CompanyLayout = ({ children }) => (
     <div className="flex flex-col min-h-screen bg-brand-cream text-brand-charcoal">
