@@ -1,7 +1,7 @@
 // src/marketing/layouts/CompanyLayout.jsx
 
 import React from 'react';
-import CompanyHeader from '../navigation/CompanyHeader'; 
+//import CompanyHeader from '../navigation/CompanyHeader'; 
 //import CompanyFooter from '../navigation/CompanyFooter'; 
 
 const CompanyLayout = ({ children }) => (
