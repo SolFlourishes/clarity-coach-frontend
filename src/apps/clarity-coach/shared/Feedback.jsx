@@ -9,9 +9,9 @@ import {
     CardFooter, 
     CardHeader, 
     CardTitle 
-} from './ui/card'; 
-import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
+} from './card'; 
+import { Button } from './button';
+import { Textarea } from './textarea';
 // --- END FIX ---
 
 const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
