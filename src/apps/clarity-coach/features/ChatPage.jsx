@@ -9,8 +9,8 @@ import { Feedback } from '../../shared/Feedback';
 
 // FIX: Corrected paths for generic UI components
 import { Card, CardContent, CardHeader } from '../../shared/card';
-import { Button } from '../../shared/button';
-import { Textarea } from '../../shared/textarea';
+import { Button } from '../shared/button';
+import { Textarea } from '../shared/textarea';
 // --- END FIX ---
 
 const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
