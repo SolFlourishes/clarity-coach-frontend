@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
+import ErrorBoundary from './ErrorFallback';
 
 // FIX: Imports confirmed correct after all migrations
 // Layouts & Nav
@@ -26,6 +27,7 @@ function App() {
     const withCompanyLayout = (Component) => <CompanyLayout>{Component}</CompanyLayout>;
 
     return (
+        </ErrorBoundary>
         <Routes>
             
             {/* 1. MAIN COMPANY WEBSITE ROUTES - Wrap each root component in CompanyLayout */}
@@ -54,6 +56,7 @@ function App() {
                 </div>
             } />
         </Routes>
+        </ErrorBoundary>
     );
 }
 
