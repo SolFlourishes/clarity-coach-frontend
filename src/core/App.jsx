@@ -3,10 +3,9 @@
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 
-// FIX: Corrected import paths (from ./ to ../)
-
+// FIX: Imports confirmed correct after all migrations
 // Layouts & Nav
-import CompanyLayout from '../marketing/layouts/CompanyLayout';
+import CompanyLayout from '../marketing/layouts/CompanyLayout'; 
 
 // Application Router
 import ClarityCoachRouter from '../apps/clarity-coach/ClarityCoachRouter'; 
@@ -19,17 +18,18 @@ import CommunityPage from '../marketing/pages/CommunityPage';
 import SupportPage from '../marketing/pages/SupportPage'; 
 
 // Static content - we import the raw pages but wrap them with CompanyLayout
-import { CommitmentsPage, CreditsPage } from '../marketing/pages/content/CompanyContent';
+import { CommitmentsPage, CreditsPage, AboutPage } from '../marketing/pages/content/CompanyContent'; 
 
 
 function App() {
-    // Helper function to apply the CompanyLayout wrapper cleanly
+    // FIX: Define the helper function INSIDE the component where it's correctly scoped.
     const withCompanyLayout = (Component) => <CompanyLayout>{Component}</CompanyLayout>;
 
     return (
         <Routes>
             
             {/* 1. MAIN COMPANY WEBSITE ROUTES - Wrap each root component in CompanyLayout */}
+            
             {/* Index Route / Landing Page */}
             <Route index element={withCompanyLayout(<CompanyLandingPage />)} /> 
 
@@ -39,7 +39,7 @@ function App() {
             <Route path="/support" element={withCompanyLayout(<SupportPage />)} />
             <Route path="/contact" element={withCompanyLayout(<ContactPage />)} />
             
-            {/* Reusing content from StaticContent, wrapped in the new layout */}
+            {/* Reusing content from CompanyContent */}
             <Route path="/commitments" element={withCompanyLayout(<CommitmentsPage />)} />
             <Route path="/credits" element={withCompanyLayout(<CreditsPage />)} />
             
