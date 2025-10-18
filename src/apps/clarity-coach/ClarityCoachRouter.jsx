@@ -12,7 +12,7 @@ import TranslatePage from './features/TranslatePage';
 import ChatPage from './features/ChatPage'; 
 
 // 3. APP-SPECIFIC STATIC CONTENT (from external 'marketing' folder)
-import { HowToUsePage, ChangeLogPage, RoadmapPage } from '../../marketing/pages/content/StaticContent';
+import { HowToUsePage, ChangeLogPage, RoadmapPage } from './shared/AppDocs';
 
 // Simple 404 component for failed nested routes
 const NotFoundPage = () => (
