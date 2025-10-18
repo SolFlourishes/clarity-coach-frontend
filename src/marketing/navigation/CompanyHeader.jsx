@@ -1,8 +1,9 @@
 import React from 'react';
-//import { Link } from 'react-router-dom';
-//import HearthArch from '../shared/HearthArch'; 
-// FIX: Correct the path to navigate out of marketing/ and into apps/clarity-coach/shared/
-//import { Button } from '../../apps/clarity-coach/shared/button';
+import { Link } from 'react-router-dom';
+import HearthArch from '../shared/HearthArch'; 
+// FIX: Change ' तीनों dots (three dots)' to 'दो dots (two dots)' to correctly reach src/
+import { Button } from '../../apps/clarity-coach/shared/button'; // <-- CORRECT PATH
+// ^ Path: Out of navigation/, out of marketing/, into apps/clarity-coach/...
 
 const CompanyHeader = () => {
     return (
