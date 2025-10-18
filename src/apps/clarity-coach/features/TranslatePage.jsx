@@ -15,7 +15,7 @@ import {
     CardFooter, 
     CardHeader, 
     CardTitle 
-} from '../../apps/clarity-coach/shared/
+} from '../../apps/clarity-coach/shared/';
 import { Button } from '../../shared/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '../../shared/ui/alert';
 import { Textarea } from '../../shared/ui/textarea';
