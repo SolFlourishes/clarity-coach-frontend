@@ -3,7 +3,7 @@
 import React from 'react';
 import { Mail, Briefcase } from 'lucide-react';
 // FIX 1: Correct the path for the Card UI components
-import { Card, CardContent, CardHeader, CardTitle } from '../../apps/clarity-coach/shared/ui/card'; 
+import { Card, CardContent, CardHeader, CardTitle } from '../../apps/clarity-coach/shared/card'; 
 // FIX 2: Correct the path for the HearthArch logo (Fixed in earlier steps, confirming it stays correct)
 import HearthArch from '../shared/HearthArch'; 
 
