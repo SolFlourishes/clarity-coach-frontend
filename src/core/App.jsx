@@ -19,7 +19,7 @@ import CommunityPage from '../marketing/pages/CommunityPage';
 import SupportPage from '../marketing/pages/SupportPage'; 
 
 // Static content - we import the raw pages but wrap them with CompanyLayout
-import { CommitmentsPage, CreditsPage } from '../marketing/pages/content/StaticContent'; 
+import { CommitmentsPage, CreditsPage } from '../marketing/pages/content/CompanyContent';
 
 
 function App() {
