@@ -1,7 +1,7 @@
 // src/pages/CommunityPage.jsx
 
 import React from 'react';
-import CompanyLayout from '../components/CompanyLayout'; // KEEP THE IMPORT if needed for internal components, but don't use it to wrap the content
+import CompanyLayout from '../layouts/CompanyLayout'; // KEEP THE IMPORT if needed for internal components, but don't use it to wrap the content
 // ... (rest of imports)
 
 const CommunityPage = () => (

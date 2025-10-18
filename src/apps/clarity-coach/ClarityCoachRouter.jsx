@@ -1,16 +1,18 @@
-// src/components/ClarityCoachAppRoutes.jsx
+// src/apps/clarity-coach/ClarityCoachRouter.jsx
 
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-// CRITICAL FIX: Unifying imports to consistently use DEFAULT imports for main components.
+// 1. LAYOUT
 import AppLayout from './AppLayout'; 
-import HomePage from './HomePage'; 
-import TranslatePage from './TranslatePage'; 
-import ChatPage from './ChatPage'; 
 
-// Static pages use NAMED exports from the StaticPages.jsx file.
-import { HowToUsePage, ChangeLogPage, RoadmapPage } from './StaticPages'; // <-- ADDED RoadmapPage
+// 2. CORE FEATURES (from the 'features' subfolder)
+import HomePage from './features/HomePage'; 
+import TranslatePage from './features/TranslatePage'; 
+import ChatPage from './features/ChatPage'; 
+
+// 3. APP-SPECIFIC STATIC CONTENT (from external 'marketing' folder)
+import { HowToUsePage, ChangeLogPage, RoadmapPage } from '../../marketing/pages/content/StaticContent';
 
 // Simple 404 component for failed nested routes
 const NotFoundPage = () => (
@@ -21,11 +23,10 @@ const NotFoundPage = () => (
 );
 
 /**
- * ClarityCoachAppRoutes serves as the entry point for the /app/* routes.
- * It manages the app-wide state (like theme) and provides the persistent
- * layout structure (AppLayout) for all internal application pages.
+ * ClarityCoachRouter serves as the entry point for the /app/* routes.
+ * It provides the persistent AppLayout shell and defines all internal app routes.
  */
-const ClarityCoachAppRoutes = () => {
+const ClarityCoachRouter = () => {
     // Retain your theme management logic
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
     
@@ -44,14 +45,14 @@ const ClarityCoachAppRoutes = () => {
                 <Route index element={<HomePage />} />
                 
                 {/* Core Functional Pages - Passing 'mode' prop to TranslatePage */}
-                <Route path="translate/draft" element={<TranslatePage mode="draft" />} /> {/* Explicit Draft route */}
-                <Route path="translate/analyze" element={<TranslatePage mode="analyze" />} /> {/* Explicit Analyze route */}
+                <Route path="translate/draft" element={<TranslatePage mode="draft" />} /> 
+                <Route path="translate/analyze" element={<TranslatePage mode="analyze" />} /> 
                 <Route path="chat" element={<ChatPage />} />
                 
                 {/* App-Specific Static Pages that are nested under /app */}
                 <Route path="how-to-use" element={<HowToUsePage />} />
                 <Route path="changelog" element={<ChangeLogPage />} />
-                <Route path="roadmap" element={<RoadmapPage />} /> {/* <-- ADDED ROUTE */}
+                <Route path="roadmap" element={<RoadmapPage />} /> 
 
                 {/* Catch-all for failed nested routes */}
                 <Route path="*" element={<NotFoundPage />} />
@@ -60,4 +61,4 @@ const ClarityCoachAppRoutes = () => {
     );
 };
 
-export default ClarityCoachAppRoutes;
+export default ClarityCoachRouter;

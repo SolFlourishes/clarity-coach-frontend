@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Briefcase, ChevronDown } from 'lucide-react';
-import HearthArch from '../components/HearthArch';
+import HearthArch from '../../apps/clarity-coach/shared/HearthArch';
 
 const ContactPage = () => (
     <div className="flex flex-col items-center min-h-screen bg-brand-cream p-8">

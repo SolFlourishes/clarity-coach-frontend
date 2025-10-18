@@ -1,21 +1,25 @@
-// D:\Projects\clarity-coach-frontend\src\App.jsx (CORRECTED)
+// src/core/App.jsx
 
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 
-// Layouts
-import ClarityCoachAppRoutes from './components/ClarityCoachAppRoutes'; 
-import CompanyLayout from './components/CompanyLayout'; 
+// FIX: Corrected import paths (from ./ to ../)
+
+// Layouts & Nav
+import CompanyLayout from '../marketing/layouts/CompanyLayout'; 
+
+// Application Router
+import ClarityCoachRouter from '../apps/clarity-coach/ClarityCoachRouter'; 
 
 // Company Pages (Live under /)
-import CompanyLandingPage from './pages/CompanyPage'; 
-import ContactPage from './pages/ContactPage'; 
-import MissionPage from './pages/MissionPage'; 
-import CommunityPage from './pages/CommunityPage'; 
-import SupportPage from './pages/SupportPage'; 
+import CompanyLandingPage from '../marketing/pages/CompanyPage'; 
+import ContactPage from '../marketing/pages/ContactPage'; 
+import MissionPage from '../marketing/pages/MissionPage'; 
+import CommunityPage from '../marketing/pages/CommunityPage'; 
+import SupportPage from '../marketing/pages/SupportPage'; 
 
 // Static content - we import the raw pages but wrap them with CompanyLayout
-import { CommitmentsPage, CreditsPage } from './components/StaticPages'; 
+import { CommitmentsPage, CreditsPage } from '../marketing/pages/content/StaticContent'; 
 
 
 function App() {
@@ -26,7 +30,7 @@ function App() {
         <Routes>
             
             {/* 1. MAIN COMPANY WEBSITE ROUTES - Wrap each root component in CompanyLayout */}
-            {/* Root / Landing Page */}
+            {/* Index Route / Landing Page */}
             <Route index element={withCompanyLayout(<CompanyLandingPage />)} /> 
 
             {/* Dedicated Static Pages (Company-level) */}
@@ -35,12 +39,12 @@ function App() {
             <Route path="/support" element={withCompanyLayout(<SupportPage />)} />
             <Route path="/contact" element={withCompanyLayout(<ContactPage />)} />
             
-            {/* Reusing content from StaticPages, wrapped in the new layout */}
+            {/* Reusing content from StaticContent, wrapped in the new layout */}
             <Route path="/commitments" element={withCompanyLayout(<CommitmentsPage />)} />
             <Route path="/credits" element={withCompanyLayout(<CreditsPage />)} />
             
             {/* 2. CLARITY COACH APPLICATION ROUTES */}
-            <Route path="/app/*" element={<ClarityCoachAppRoutes />} />
+            <Route path="/app/*" element={<ClarityCoachRouter />} />
 
             {/* 3. FALLBACK 404 Route */}
             <Route path="*" element={

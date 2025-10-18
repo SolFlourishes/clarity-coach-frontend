@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import HearthArch from './HearthArch';
+import HearthArch from '../shared/HearthArch';
 import { Button } from '@/components/ui/button'; 
 
 const CompanyHeader = () => {

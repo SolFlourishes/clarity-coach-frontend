@@ -1,9 +1,9 @@
-// D:\Projects\clarity-coach-frontend\src\components\AppLayout.jsx
+// src/apps/clarity-coach/AppLayout.jsx
 
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import HearthArch from './HearthArch';
-import { Button } from '@/components/ui/button';
+import HearthArch from '../../marketing/shared/HearthArch';
+import { Button } from '../shared/ui/button';
 import { Sun, Moon, Menu, X, ChevronDown } from 'lucide-react';
 
 const AppLayout = ({ theme, toggleTheme, children }) => {
@@ -16,7 +16,6 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
     // Reusable navigation links component for both desktop and mobile
     const navLinks = (
         <>
-            {/* NavLink to the core app's homepage - /app */}
             <NavLink 
                 to="/app" 
                 className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`} 
@@ -25,7 +24,6 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
             >
                 Home
             </NavLink>
-            {/* NavLink to the Translate (Draft) mode - /app/translate/draft */}
             <NavLink 
                 to="/app/translate/draft" 
                 className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}
@@ -33,7 +31,6 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
             >
                 Translate
             </NavLink>
-             {/* NavLink to the Analyze mode - /app/translate/analyze */}
             <NavLink 
                 to="/app/translate/analyze" 
                 className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}
@@ -41,7 +38,6 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
             >
                 Analyze
             </NavLink>
-            {/* NavLink to the Chat Coach mode - /app/chat */}
             <NavLink 
                 to="/app/chat" 
                 className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}
@@ -61,7 +57,7 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
                     onMouseDown={(e) => e.stopPropagation()}
                 >
                     {/* --- Company Pages (Root Routes) --- */}
-                    <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">About Hearthside</Link>
+                    <Link to="/mission" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Our Mission</Link>
                     <Link to="/commitments" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Our Commitments</Link>
                     <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Contact Us</Link>
                     <Link to="/credits" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-sm text-brand-charcoal/80 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Credits</Link>
@@ -82,7 +78,7 @@ const AppLayout = ({ theme, toggleTheme, children }) => {
             <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
-                        {/* Logo and Brand Name - FIX: Links to App Home when inside the App */}
+                        {/* Logo and Brand Name - Links to App Home when inside the App */}
                         <Link to="/app" className="flex items-center gap-2 flex-shrink-0">
                             <HearthArch className="w-8 h-4 text-brand-terracotta" />
                             <span className="font-serif text-xl font-bold text-brand-charcoal dark:text-white">Clarity Coach</span>
