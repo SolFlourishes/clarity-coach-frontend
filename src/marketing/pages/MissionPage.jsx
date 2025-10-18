@@ -1,10 +1,13 @@
-// src/pages/MissionPage.jsx (Re-linked content correctly)
+// src/marketing/pages/MissionPage.jsx
 
 import React from 'react';
-// Import the content component directly (assuming it's a named export in StaticPages.jsx)
-import { AboutPage } from '../../components/StaticContent'; 
+// FIX: Correctly import AboutPage from the sibling 'content/CompanyContent' file
+import { AboutPage } from './content/CompanyContent'; 
+// NOTE: Assuming you are using named exports as planned.
 
-// MissionPage now returns the content directly, relying on App.jsx to provide the layout.
-const MissionPage = () => <AboutPage />;
+const MissionPage = () => (
+    // Render the content component directly. The layout is provided by the parent router (App.jsx).
+    <AboutPage />
+);
 
 export default MissionPage;
