@@ -9,7 +9,7 @@ import {
     CardDescription, 
     CardHeader, 
     CardTitle 
-} from './ui/card'; // <-- CORRECTED PATH
+} from '../shared/card'; // <-- CORRECTED PATH
 
 const ModeCard = ({ mode }) => (
     <Link to={mode.path} className="block group">
