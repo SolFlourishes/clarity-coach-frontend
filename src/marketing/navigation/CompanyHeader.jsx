@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import HearthArch from '../shared/HearthArch'; 
 // FIX: Correct the path to navigate out of marketing/ and into apps/clarity-coach/shared/
-import { Button } from '../../apps/clarity-coach/shared/button';
+import { Button } from '../../../apps/clarity-coach/shared/button';
 
 const CompanyHeader = () => {
     return (
