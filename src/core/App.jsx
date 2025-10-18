@@ -27,7 +27,7 @@ function App() {
     const withCompanyLayout = (Component) => <CompanyLayout>{Component}</CompanyLayout>;
 
     return (
-        </ErrorBoundary>
+        <ErrorBoundary>
         <Routes>
             
             {/* 1. MAIN COMPANY WEBSITE ROUTES - Wrap each root component in CompanyLayout */}
