@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../../apps/clarity-coach/shared/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../../apps/clarity-coach/shared/card';
 import { ArrowRight } from 'lucide-react';
 
 const CompanyLandingPage = () => {
