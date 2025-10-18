@@ -2,15 +2,13 @@
 
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-
-// FIX: Imports confirmed correct after all migrations
+import ErrorBoundary from './ErrorFallback.jsx'; // Assuming ErrorFallback is committed
 
 // Layouts & Nav
 import CompanyLayout from '../marketing/layouts/CompanyLayout'; 
 
 // Application Router
 import ClarityCoachRouter from '../apps/clarity-coach/ClarityCoachRouter'; 
-import ErrorBoundary from './ErrorFallback.jsx'; // Assuming ErrorFallback is committed
 
 // Company Pages (Live under /)
 import CompanyLandingPage from '../marketing/pages/CompanyPage'; 
@@ -19,7 +17,7 @@ import MissionPage from '../marketing/pages/MissionPage';
 import CommunityPage from '../marketing/pages/CommunityPage'; 
 import SupportPage from '../marketing/pages/SupportPage'; 
 
-// Static content
+// Static content - we import the raw pages but wrap them with CompanyLayout
 import { CommitmentsPage, CreditsPage, AboutPage } from '../marketing/pages/content/CompanyContent'; 
 
 
@@ -32,6 +30,7 @@ function App() {
         <Routes>
             
             {/* 1. MAIN COMPANY WEBSITE ROUTES - Wrap each root component in CompanyLayout */}
+            
             {/* Index Route / Landing Page */}
             <Route index element={withCompanyLayout(<CompanyLandingPage />)} /> 
 

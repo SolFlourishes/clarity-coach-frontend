@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-// FIX: Correct path to HearthArch
+// FIX 1: Correct path for logo (relative to marketing/navigation/)
 import HearthArch from '../shared/HearthArch'; 
-// FIX: Correct path to Button component
-import { Button } from '../../apps/clarity-coach/shared/button';
+// FIX 2: Correct path for Button (out of marketing/, into apps/clarity-coach/shared/)
+import { Button } from '../../apps/clarity-coach/shared/button'; 
 
 const CompanyHeader = () => {
     return (

@@ -1,4 +1,5 @@
-// src/components/HearthArch.jsx
+// src/marketing/shared/HearthArch.jsx
+
 import React from 'react';
 
 const HearthArch = ({ className = '', ...props }) => {
