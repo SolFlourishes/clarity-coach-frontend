@@ -1,10 +1,11 @@
-// src/pages/SupportPage.jsx
+// src/marketing/pages/SupportPage.jsx
 
 import React from 'react';
-import { Link } from 'react-router-dom'; // KEEP THE IMPORT if needed for internal components, but don't use it to wrap the content
-// ... (rest of imports)
+import { Link } from 'react-router-dom';
+// Removed import CompanyLayout from ...
 
 const SupportPage = () => (
+    // FIX: Render the content component directly.
     <div className="p-8 max-w-4xl mx-auto">
         <h1 className="text-5xl font-serif text-brand-terracotta mb-4">Support Hearthside Works</h1>
         <p className="text-xl text-brand-charcoal/80">We are currently a small, founder-led company. Your support helps us keep the servers running and the project growing.</p>
