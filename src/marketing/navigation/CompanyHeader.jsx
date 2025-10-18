@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-// FIX: Ensure this path is absolutely correct relative to the navigation/ folder
 import HearthArch from '../shared/HearthArch'; 
-import { Button } from '../../shared/button';
+// FIX: Correct the path to navigate out of marketing/ and into apps/clarity-coach/shared/
+import { Button } from '../../apps/clarity-coach/shared/button';
 
 const CompanyHeader = () => {
     return (
