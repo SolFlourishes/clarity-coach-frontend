@@ -5,12 +5,12 @@ import { Sparkles, MessageCircleCode, ArrowUp, Zap, BookA, Info } from 'lucide-r
 import { Link } from 'react-router-dom';
 // FIX: Corrected paths for internal shared components/utilities
 import { useCopyToClipboard } from '../shared/useCopyToClipboard'; 
-import { Feedback } from '../shared/Feedback'; 
+import { Feedback } from '../../shared/Feedback'; 
 
 // FIX: Corrected paths for generic UI components
-import { Card, CardContent, CardHeader } from '../../shared/ui/card';
-import { Button } from '../../shared/ui/button';
-import { Textarea } from '../../shared/ui/textarea';
+import { Card, CardContent, CardHeader } from '../../shared/card';
+import { Button } from '../../shared/button';
+import { Textarea } from '../../shared/textarea';
 // --- END FIX ---
 
 const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
