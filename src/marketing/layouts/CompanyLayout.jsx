@@ -1,18 +1,17 @@
-// src/marketing/layouts/CompanyLayout.jsx (Temporary Debugging Code)
+// src/marketing/layouts/CompanyLayout.jsx (Restoring full functionality)
 
 import React from 'react';
-// FIX: Temporarily comment out all dependencies except React
-// import CompanyHeader from '../navigation/CompanyHeader'; 
-// import CompanyFooter from '../navigation/CompanyFooter'; 
+import CompanyHeader from '../navigation/CompanyHeader'; 
+import CompanyFooter from '../navigation/CompanyFooter'; 
 
 const CompanyLayout = ({ children }) => (
-    // FIX: Only render minimal structure
-    <div style={{ height: '100vh', backgroundColor: 'lightyellow' }}>
-        <h1>COMPANY LAYOUT IS RENDERING</h1>
-        {/* Comment out header, footer, and children for minimal testing */}
-        {/* <CompanyHeader /> */}
-        {/* <main>{children}</main> */}
-        {/* <CompanyFooter /> */}
+    // RESTORE THE ORIGINAL WRAPPER STRUCTURE
+    <div className="flex flex-col min-h-screen bg-brand-cream text-brand-charcoal">
+        <CompanyHeader />
+        <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            {children} // <-- THIS WILL NOW RENDER YOUR PAGE CONTENT (e.g., CompanyPage.jsx)
+        </main>
+        <CompanyFooter />
     </div>
 );
 
