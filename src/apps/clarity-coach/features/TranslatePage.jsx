@@ -4,8 +4,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Copy, Sparkles, Wand2, ArrowRight, BookA, Info, Settings, XCircle, Plus, Search, Check, Save, MessageSquareText } from 'lucide-react';
 // FIX: Corrected paths for internal shared components/utilities
-import { useCopyToClipboard } from '../../shared/useCopyToClipboard'; 
-import { Feedback } from '../../shared/Feedback';
+import { useCopyToClipboard } from '../shared/useCopyToClipboard'; 
+import { Feedback } from '../shared/Feedback';
 
 // FIX: Corrected paths for generic UI components (relative to 'features/')
 import { 
@@ -15,10 +15,10 @@ import {
     CardFooter, 
     CardHeader, 
     CardTitle 
-} from '../../apps/clarity-coach/shared/';
-import { Button } from '../../shared/button';
-import { Alert, AlertDescription, AlertTitle } from '../../shared/alert';
-import { Textarea } from '../../shared/textarea';
+} from '../shared/card';
+import { Button } from '../shared/button';
+import { Alert, AlertDescription, AlertTitle } from '../shared/alert';
+import { Textarea } from '../shared/textarea';
 // --- END FIX ---
 
 
