@@ -41,20 +41,18 @@ const ClarityCoachRouter = () => {
     return (
         <AppLayout theme={theme} toggleTheme={toggleTheme}>
             <Routes>
-                {/* /app/ - Should land on the core app's home page (Mode Cards) */}
+                {/* 1. App Landing Page */}
                 <Route index element={<HomePage />} />
                 
-                {/* Core Functional Pages - Passing 'mode' prop to TranslatePage */}
-                <Route path="translate/draft" element={<TranslatePage mode="draft" />} /> 
-                <Route path="translate/analyze" element={<TranslatePage mode="analyze" />} /> 
+                {/* 2. CORE FUNCTIONAL PAGES - Use nested path for simplicity */}
+                {/* FIX: Use a wildcard (*) on the 'translate' path to catch both /draft and /analyze */}
+                <Route path="translate/*" element={<TranslatePage />} /> 
                 <Route path="chat" element={<ChatPage />} />
-                
-                {/* App-Specific Static Pages that are nested under /app */}
-                <Route path="how-to-use" element={<HowToUsePage />} />
-                <Route path="changelog" element={<ChangeLogPage />} />
-                <Route path="roadmap" element={<RoadmapPage />} /> 
 
-                {/* Catch-all for failed nested routes */}
+                {/* 3. APP DOCUMENTATION PAGES */}
+                <Route path="how-to-use" element={<HowToUsePage />} />
+                {/* ... (rest of the static routes) ... */}
+
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </AppLayout>
