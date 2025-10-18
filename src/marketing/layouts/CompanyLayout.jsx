@@ -1,7 +1,7 @@
 // src/marketing/layouts/CompanyLayout.jsx
 
 import React from 'react';
-// FIX: Correctly import from the navigation folder
+// FIX: Check these two lines are correct relative to the 'layouts' folder
 import CompanyHeader from '../navigation/CompanyHeader'; 
 import CompanyFooter from '../navigation/CompanyFooter';
 
