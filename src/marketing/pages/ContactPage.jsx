@@ -1,7 +1,7 @@
 // src/pages/ContactPage.jsx
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../../apps/clarity-coach/shared/ui/card';
 import { Mail, Briefcase, ChevronDown } from 'lucide-react';
 import HearthArch from '../shared/HearthArch';
 
