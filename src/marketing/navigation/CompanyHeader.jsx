@@ -1,9 +1,11 @@
+// src/marketing/navigation/CompanyHeader.jsx
+
 import React from 'react';
 import { Link } from 'react-router-dom';
+// FIX: Correct path to HearthArch
 import HearthArch from '../shared/HearthArch'; 
-// FIX: Change ' तीनों dots (three dots)' to 'दो dots (two dots)' to correctly reach src/
-import { Button } from '../../apps/clarity-coach/shared/button'; // <-- CORRECT PATH
-// ^ Path: Out of navigation/, out of marketing/, into apps/clarity-coach/...
+// FIX: Correct path to Button component
+import { Button } from '../../apps/clarity-coach/shared/button';
 
 const CompanyHeader = () => {
     return (
@@ -18,7 +20,6 @@ const CompanyHeader = () => {
                     
                     {/* Desktop Navigation Links */}
                     <nav className="flex items-center space-x-6">
-                        {/* New Company Nav Links */}
                         <Link to="/mission" className="text-brand-charcoal/80 hover:text-brand-teal font-sans text-base font-semibold">Our Mission</Link>
                         <Link to="/app" className="text-brand-charcoal/80 hover:text-brand-teal font-sans text-base font-semibold">Clarity Coach</Link>
                         <Link to="/community" className="text-brand-charcoal/80 hover:text-brand-teal font-sans text-base font-semibold">Community</Link>
