@@ -1,7 +1,7 @@
 // src/apps/clarity-coach/shared/alert.jsx
 
 import React from "react";
-import { cn } from "../../lib/utils"; // Assuming utils.js has 'cn' for combining class names
+import { cn } from "../lib/utils"; // Assuming utils.js has 'cn' for combining class names
 
 // --- 1. Alert Component ---
 const Alert = React.forwardRef(({ className, variant, ...props }, ref) => (

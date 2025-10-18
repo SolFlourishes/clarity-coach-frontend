@@ -1,7 +1,7 @@
 // src/apps/clarity-coach/shared/textarea.jsx
 
 import React from "react";
-import { cn } from "../../lib/utils"; // Assuming utils.js has 'cn' for combining class names
+import { cn } from "../lib/utils"; // Assuming utils.js has 'cn' for combining class names
 
 // This defines the shared styling for Textarea, similar to other UI components
 const Textarea = React.forwardRef(({ className, ...props }, ref) => {
