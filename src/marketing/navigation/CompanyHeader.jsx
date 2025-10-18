@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 // FIX: Ensure this path is absolutely correct relative to the navigation/ folder
 import HearthArch from '../shared/HearthArch'; 
-import { Button } from '@/components/ui/button';
+import { Button } from '../shared/button';
 
 const CompanyHeader = () => {
     return (
