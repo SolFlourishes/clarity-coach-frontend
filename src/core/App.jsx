@@ -6,7 +6,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 // FIX: Corrected import paths (from ./ to ../)
 
 // Layouts & Nav
-import CompanyLayout from '../marketing/layouts/CompanyLayout'; 
+import CompanyLayout from '../marketing/layouts/CompanyLayout';
 
 // Application Router
 import ClarityCoachRouter from '../apps/clarity-coach/ClarityCoachRouter'; 
