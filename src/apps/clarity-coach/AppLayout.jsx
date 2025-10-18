@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import HearthArch from '../../marketing/shared/HearthArch';
-import { Button } from '../shared/ui/button';
+import { Button } from '../../apps/clarity-coach/shared/button';
 import { Sun, Moon, Menu, X, ChevronDown } from 'lucide-react';
 
 const AppLayout = ({ theme, toggleTheme, children }) => {
