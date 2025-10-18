@@ -1,7 +1,7 @@
 // src/apps/clarity-coach/ClarityCoachRouter.jsx
 
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 
 // 1. LAYOUT
 import AppLayout from './AppLayout'; 
