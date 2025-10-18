@@ -4,8 +4,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Copy, Sparkles, Wand2, ArrowRight, BookA, Info, Settings, XCircle, Plus, Search, Check, Save, MessageSquareText } from 'lucide-react';
 // FIX: Corrected paths for internal shared components/utilities
-import { useCopyToClipboard } from '../shared/useCopyToClipboard'; 
-import { Feedback } from '../shared/Feedback';
+import { useCopyToClipboard } from '../../shared/useCopyToClipboard'; 
+import { Feedback } from '../../shared/Feedback';
 
 // FIX: Corrected paths for generic UI components (relative to 'features/')
 import { 
