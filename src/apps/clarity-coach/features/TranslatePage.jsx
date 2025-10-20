@@ -1,7 +1,7 @@
 // src/apps/clarity-coach/features/TranslatePage.jsx
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useLocation, Link } from 'react-router-dom'; // <--- FIX: Added Link here
+import { useLocation, Link } from 'react-router-dom'; // <--- FIX: Link added here
 import { Copy, Sparkles, Wand2, ArrowRight, BookA, Info, Settings, XCircle, Plus, Search, Check, Save, MessageSquareText, Lightbulb } from 'lucide-react';
 // FIX: Corrected paths for internal shared components/utilities
 import { useCopyToClipboard } from '../shared/useCopyToClipboard'; 
