@@ -6,6 +6,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global Accessibility Styles */
+@layer base {
+    /* Focus visible for keyboard navigation */
+    *:focus-visible {
+        outline: 3px solid #14b8a6;
+        outline-offset: 2px;
+    }
+}
+
 /* Base body styling */
 body {
     background-color: #F9FAFB; /* Light warm background */

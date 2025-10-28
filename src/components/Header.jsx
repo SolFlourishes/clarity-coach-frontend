@@ -54,18 +54,22 @@ export const Header = ({ theme, toggleTheme }) => {
                     <div className="relative" ref={dropdownRef}>
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition duration-150"
+                            aria-expanded={isDropdownOpen}
+                            aria-haspopup="true"
+                            aria-label="More pages menu"
+                            className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition duration-150 focus:outline-none focus:ring-2 focus:ring-teal-500 rounded"
                         >
                             More <ChevronDown className="h-4 w-4 ml-1" />
                         </button>
                         {isDropdownOpen && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 py-1">
+                            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 py-1" role="menu" aria-orientation="vertical">
                                 {morePages.map((page) => (
                                     <a
                                         key={page.href}
                                         href={page.href}
-                                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none"
                                         onClick={() => setIsDropdownOpen(false)}
+                                        role="menuitem"
                                     >
                                         {page.label}
                                     </a>

@@ -17,15 +17,15 @@ export const Feedback = ({ type, onSubmit, isSuccess }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="mt-4 pt-4 border-t border-dashed border-gray-300 dark:border-gray-600 space-y-3">
-            <div className="flex justify-center gap-1">
+        <form onSubmit={handleSubmit} className="mt-4 pt-4 border-t border-dashed border-gray-300 dark:border-gray-600 space-y-3" aria-label="Feedback rating form">
+            <div className="flex justify-center gap-1" role="group" aria-label="Rate from 1 to 5 stars">
                 {[...Array(5)].map((_, index) => {
                     const ratingValue = index + 1;
                     return (
                         <button
                             type="button"
                             key={ratingValue}
-                            className={`text-2xl transition-colors ${ratingValue <= (hover || rating) ? 'text-gold' : 'text-gray-400 dark:text-gray-600 hover:text-gray-500'}`}
+                            className={`text-2xl transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 rounded ${ratingValue <= (hover || rating) ? 'text-gold' : 'text-gray-400 dark:text-gray-600 hover:text-gray-500'}`}
                             onClick={() => setRating(ratingValue)}
                             onMouseEnter={() => setHover(ratingValue)}
                             onMouseLeave={() => setHover(0)}
@@ -43,12 +43,13 @@ export const Feedback = ({ type, onSubmit, isSuccess }) => {
                 placeholder="How could this be improved?"
                 // --- EXISTING: className="io-textarea text-sm min-h-[100px]" ---
                 // --- NEW FIX: Add explicit Tailwind classes for background, text, border, and focus states, including dark mode variants. ---
-                className="w-full text-sm min-h-[100px] p-3 rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800 text-gray-800 dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                aria-label="Feedback comments"
+                className="w-full text-sm min-h-[100px] p-3 rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800 text-gray-800 dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none transition-colors"
             />
             <button
                 type="submit"
                 disabled={rating === 0}
-                className="w-full text-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-bold py-2 px-4 rounded-lg disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed"
+                className="w-full text-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-bold py-2 px-4 rounded-lg disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
                 Rate this {type}
             </button>

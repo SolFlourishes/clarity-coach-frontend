@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
-// This configuration will be moved to a central place later
-const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
-const API_BASE_URL = rawApiUrl.replace(/\/$/, "");
+import { API_BASE_URL } from '../config';
 
 export const ChatPage = () => {
   const [history, setHistory] = useState([]);
@@ -48,7 +45,7 @@ export const ChatPage = () => {
         <a href="#/" className="text-teal-600 dark:text-teal-400 hover:underline mb-4 inline-block">‹ Back to Modes</a>
         <div className="max-w-3xl mx-auto flex flex-col h-[75vh] bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-xl">
             <h1 className="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700 font-serif text-gray-900 dark:text-white">Chat with the Coach</h1>
-            <div className="flex-grow p-4 overflow-y-auto space-y-4">
+            <div className="flex-grow p-4 overflow-y-auto space-y-4" role="log" aria-live="polite" aria-atomic="false">
                 {history.map((msg, index) => (
                     <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div 
@@ -68,16 +65,19 @@ export const ChatPage = () => {
                 )}
                 <div ref={chatEndRef} />
             </div>
-            <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200 dark:border-gray-700 flex gap-2">
-                <input 
-                    type="text" 
-                    value={input} 
-                    onChange={(e) => setInput(e.target.value)} 
-                    placeholder="Describe your situation..." 
+            <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200 dark:border-gray-700 flex gap-2" aria-label="Chat message form">
+                <label htmlFor="chat-input" className="sr-only">Describe your situation</label>
+                <input
+                    id="chat-input"
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Describe your situation..."
                     disabled={loading}
-                    className="flex-grow bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg p-2 focus:ring-teal-500 focus:border-teal-500"
+                    aria-label="Describe your situation"
+                    className="flex-grow bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none"
                 />
-                <button type="submit" disabled={loading || !input.trim()} className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg disabled:bg-gray-500 dark:disabled:bg-gray-600 disabled:cursor-not-allowed">
+                <button type="submit" disabled={loading || !input.trim()} className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg disabled:bg-gray-500 dark:disabled:bg-gray-600 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-teal-300" aria-label="Send message">
                     Send
                 </button>
             </form>

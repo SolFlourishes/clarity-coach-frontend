@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
+import { API_BASE_URL } from '../config';
 
-const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
-const API_BASE_URL = rawApiUrl.replace(/\/$/, "");
-// --- NEW: Read the version from the environment variable ---
 const appVersion = import.meta.env.VITE_APP_VERSION || '3.0.2';
 
 export const Footer = () => {

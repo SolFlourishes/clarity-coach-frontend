@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Feedback } from './Feedback';
 import { Copy, Check, Edit, Save, X, RefreshCw } from 'lucide-react';
-
-const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
-const API_BASE_URL = rawApiUrl.replace(/\/$/, "");
+import { API_BASE_URL } from '../config';
 
 const loadingTips = [
     "Average translation time is 5-10 seconds.", "Analyzing tone, subtext, and pragmatic meaning...", "Tip: Providing clear context leads to better translations.", "Did you know? The 'Double Empathy Problem' suggests communication gaps are a two-way street.", "Checking for potential misinterpretations...", "Tip: Indirect communicators often use questions to make suggestions softly.", "Considering how different neurotypes might perceive this message...",

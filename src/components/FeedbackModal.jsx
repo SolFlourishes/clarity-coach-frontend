@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-
-// This configuration will be moved to a central place later
-const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
-const API_BASE_URL = rawApiUrl.replace(/\/$/, "");
+import { API_BASE_URL } from '../config';
 
 export const FeedbackModal = () => {
     const [isOpen, setIsOpen] = useState(false);
