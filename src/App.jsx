@@ -5,10 +5,7 @@ import { TranslatePage } from './components/TranslatePage';
 import { ChatPage } from './components/ChatPage';
 import { AboutPage, HowToUsePage, RoadmapPage, ChangeLogPage, CreditsPage, CommitmentsPage } from './components/StaticPages';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <ThemeProvider></ThemeProvider>
-{const App = () => {
+const App = () => {
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
     useEffect(() => {
         document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -48,12 +45,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </div>
     );
 };
-}
-<BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ThemeProvider>
-  </React.StrictMode>,
-);
 
 export default App;
