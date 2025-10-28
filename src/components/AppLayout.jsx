@@ -12,8 +12,8 @@ export const AppLayout = ({ children, theme, toggleTheme }) => {
             </div>
 
             <Header theme={theme} toggleTheme={toggleTheme} />
-            <main className="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-                {children}
+            <main className="flex-grow p-4 transition duration-500" style={{ backgroundColor: 'var(--color-background)' }}>
+             <Outlet /> 
             </main>
             <Footer />
             <Analytics />
