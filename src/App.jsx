@@ -5,6 +5,9 @@ import { TranslatePage } from './components/TranslatePage';
 import { ChatPage } from './components/ChatPage';
 import { AboutPage, HowToUsePage, RoadmapPage, ChangeLogPage, CreditsPage, CommitmentsPage } from './components/StaticPages';
 
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <ThemeProvider>
 const App = () => {
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
     useEffect(() => {
@@ -45,5 +48,10 @@ const App = () => {
         </div>
     );
 };
-
+<BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ThemeProvider>
+  </React.StrictMode>,
+);
 export default App;
