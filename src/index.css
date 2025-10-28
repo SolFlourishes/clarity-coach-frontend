@@ -1,35 +1,67 @@
-/* Import Google Fonts per Brand Guide */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Merriweather:wght@400;700;900&display=swap');
+/* --- 1. Typography Imports --- */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-/* Tailwind CSS Directives */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* --- 2. Base Variables (Brand Constants) --- */
+:root {
+  --teal-primary: #007B8C;     /* Deep Teal/Sapphire (Primary Action) */
+  --terracotta-warmth: #E28A6D;/* Muted Terracotta (Warmth) */
+  --gold-accent: #FFC72C;     /* Bright Gold/Sunlight (Accent/Growth) */
+  --text-dark: #1F2937;        /* Dark Warm Gray */
+  --bg-light: #F9FAFB;         /* Soft Off-White */
+}
 
-/* Base body styling (Your existing dark default styles) */
+/* --- 3. Theme Definitions (Dynamic Colors) --- */
+/* Light Mode (Default, Warm & Inviting) */
+:root, .light {
+  --color-text: var(--text-dark);
+  --color-background: var(--bg-light);
+  --color-surface: #FFFFFF; /* White for cards/containers */
+  --color-accent-button: var(--terracotta-warmth);
+  --color-header-bg: var(--terracotta-warmth);
+  --color-header-text: var(--bg-light);
+}
+
+/* Dark Mode (Modern & High Contrast) */
+.dark {
+  --color-text: var(--bg-light);
+  --color-background: #0E1218; 
+  --color-surface: #1E232E;    
+  --color-accent-button: var(--gold-accent);
+  --color-header-bg: var(--teal-primary);
+  --color-header-text: var(--bg-light);
+}
+
+/* --- 4. Global Base Styles (Apply Variables) --- */
 body {
-    background-color: #111827; /* gray-900 */
-    color: #F9FAFB; /* gray-100 */
-    font-family: 'Inter', sans-serif;
+  background-color: var(--color-background); 
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  transition: background-color 0.5s ease, color 0.5s ease; /* Smooth transition */
+  margin: 0; 
+  padding: 0;
 }
 
-/* =================================================== */
-/* --- FIX: Form Input Visibility in Dark Mode --- */
-/* This rule targets all common form elements when the '.dark' class is active */
-/* and forces a legible, contrasting color scheme. */
-/* =================================================== */
-.dark input[type="text"],
-.dark input[type="email"],
-.dark input[type="password"],
-.dark textarea,
-.dark select {
-    /* Set text color to light gray (gray-100 in your config) */
-    color: #F9FAFB !important; 
-
-    /* Set background to a dark color (like gray-700/800 from your config) */
-    background-color: #374151 !important; 
-    
-    /* Ensure the border is also visible */
-    border-color: #6b7280 !important;
+h1, h2, h3, h4, .font-serif {
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
+  color: var(--color-text); 
 }
-/* --------------------------------------------------- */
+
+/* Reset default link color */
+a {
+    color: var(--teal-primary);
+    text-decoration: none; 
+    transition: color 0.3s ease;
+}
+a:hover {
+    color: var(--terracotta-warmth);
+    text-decoration: underline;
+}
+
+.container {
+  max-width: 1200px; 
+  margin-left: auto;
+  margin-right: auto;
+}
