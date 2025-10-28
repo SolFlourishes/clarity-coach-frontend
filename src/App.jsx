@@ -1,48 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { AppLayout } from './components/AppLayout';
-import { HomePage } from './components/HomePage';
-import { TranslatePage } from './components/TranslatePage';
-import { ChatPage } from './components/ChatPage';
-import { AboutPage, HowToUsePage, RoadmapPage, ChangeLogPage, CreditsPage, CommitmentsPage } from './components/StaticPages';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import AppLayout from './components/AppLayout.jsx';
+// Import your necessary page components here
+import TranslatePage from './pages/TranslatePage.jsx'; 
+import ChatPage from './pages/ChatPage.jsx';
+// Import any other required components like NotFound
+// import NotFoundPage from './pages/NotFoundPage.jsx'; 
 
 const App = () => {
-    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
-    useEffect(() => {
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-        localStorage.setItem('theme', theme);
-    }, [theme]);
-
-    const toggleTheme = () => setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
-
-    const [page, setPage] = useState(getCurrentPage());
-    function getCurrentPage() {
-        const hash = window.location.hash.slice(1) || '/';
-        return hash;
-    }
-    useEffect(() => {
-        const handleHashChange = () => setPage(getCurrentPage());
-        window.addEventListener('hashchange', handleHashChange);
-        return () => window.removeEventListener('hashchange', handleHashChange);
-    }, []);
-
-    const renderPage = () => {
-        const [path, param] = page.split('/').filter(Boolean);
-        if (path === 'translate' && param) return <TranslatePage mode={param} />;
-        if (path === 'chat') return <ChatPage />;
-
-        const staticPages = {
-            'about': <AboutPage />, 'how-to-use': <HowToUsePage />, 'roadmap': <RoadmapPage />,
-            'changelog': <ChangeLogPage />, 'credits': <CreditsPage />, 'commitments': <CommitmentsPage />,
-        };
-        return staticPages[path] || <HomePage />;
-    };
-
     return (
-        <div className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen font-sans">
-            <AppLayout theme={theme} toggleTheme={toggleTheme}>
-                {renderPage()}
-            </AppLayout>
-        </div>
+        // App logic contains the Routes and uses AppLayout to wrap navigation/pages
+        <Routes>
+            <Route path="/" element={<AppLayout />}>
+                {/* Default route for the app landing page */}
+                <Route index element={<TranslatePage />} />
+                
+                {/* Core Clarity Coach Features */}
+                <Route path="translate" element={<TranslatePage />} />
+                <Route path="chat" element={<ChatPage />} />
+                
+                {/* Add other specific Clarity Coach routes here */}
+                {/* Example: <Route path="profile" element={<ProfilePage />} /> */}
+                
+                {/* Fallback route */}
+                {/* <Route path="*" element={<NotFoundPage />} /> */}
+            </Route>
+        </Routes>
     );
 };
 
