@@ -23,4 +23,4 @@ const Footer = () => {
     );
 };
 
-export { Footer }; (and keep const Footer = () => { ... })
+export { Footer };
