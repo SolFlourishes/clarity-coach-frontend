@@ -7,8 +7,8 @@ import { AboutPage, HowToUsePage, RoadmapPage, ChangeLogPage, CreditsPage, Commi
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ThemeProvider>
-const App = () => {
+    <ThemeProvider></ThemeProvider>
+{ const App = () => {
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
     useEffect(() => {
         document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -53,5 +53,4 @@ const App = () => {
       </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>,
-);
 export default App;
