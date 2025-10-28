@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Feedback } from './Feedback';
+import { Feedback } from '../components/Feedback';
 import { Copy, Check, Edit, Save, X, RefreshCw } from 'lucide-react';
 
 const rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';

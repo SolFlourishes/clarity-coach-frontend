@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ModeCard } from './ModeCard';
+import { ModeCard } from '../components/ModeCard';
 
 export const HomePage = () => {
     // FIX #2: Inspirational Quotes Added
