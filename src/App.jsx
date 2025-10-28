@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import AppLayout from './components/AppLayout.jsx';
+import { AppLayout } from './components/AppLayout.jsx';
 // Import your necessary page components here
 import TranslatePage from './pages/TranslatePage.jsx'; 
 import ChatPage from './pages/ChatPage.jsx';
