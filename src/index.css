@@ -6,11 +6,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base body styling (Your existing dark default styles) */
+/* Base body styling */
 body {
+    background-color: #F9FAFB; /* Light warm background */
+    color: #1F2937; /* Dark warm gray text */
+    font-family: 'Inter', sans-serif;
+}
+
+body.dark {
     background-color: #111827; /* gray-900 */
     color: #F9FAFB; /* gray-100 */
-    font-family: 'Inter', sans-serif;
 }
 
 /* =================================================== */
