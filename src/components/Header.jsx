@@ -1,87 +1,76 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Moon, Sun, ChevronDown } from 'lucide-react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ThemeToggle } from "./theme-toggle.tsx"; // Assuming the toggle component is .tsx
+import { useTheme } from "../hooks/use-theme"; 
 
-export const Header = ({ theme, toggleTheme }) => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const dropdownRef = useRef(null);
+// Brand color variables used for specific accents
+const GOLD_ACCENT = 'var(--gold-accent)';
+const PRIMARY_TEAL = 'var(--teal-primary)';
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsDropdownOpen(false);
-            }
-        };
-        // --- NEW: Function to handle Escape key press ---
-        const handleKeyDown = (event) => {
-            if (event.key === 'Escape') {
-                setIsDropdownOpen(false);
-            }
-        };
+const Header = () => {
+    // 1. Hook usage to get state (used for styling/conditional rendering if needed)
+    const { theme } = useTheme(); 
 
-        document.addEventListener('mousedown', handleClickOutside);
-        document.addEventListener('keydown', handleKeyDown); // Add keydown listener
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-            document.removeEventListener('keydown', handleKeyDown); // Clean up listener
-        };
-    }, []);
-
-    const morePages = [
-        { href: '/#about', label: 'About' },
-        { href: '/#how-to-use', label: 'How to Use' },
-        { href: '/#roadmap', label: 'Roadmap' },
-        { href: '/#changelog', label: 'Change Log' },
-        { href: '/#credits', label: 'Credits' },
-        { href: '/#commitments', label: 'Our Commitments' },
+    // Navigation links (Example, adjust to your actual Clarity Coach links)
+    const navItems = [
+        { name: "Translate", url: "/translate" },
+        { name: "Chat", url: "/chat" },
+        // Link back to the new landing page
+        { name: "Hearthside Home", url: "https://hearthsideworks.com" } 
     ];
-
+    
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-gray-50/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 shadow-sm">
-            <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-                <a href="/#" className="text-xl font-black tracking-wider text-purple-600 dark:text-purple-400 hover:text-purple-700 transition duration-150">
-                    CLARITY COACH
-                </a>
-                <div className="flex items-center space-x-6">
-                    <a href="/#translate/draft" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition duration-150">
-                        Draft Mode
-                    </a>
-                    <a href="/#translate/analyze" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition duration-150">
-                        Analyze Mode
-                    </a>
-                    <a href="/#chat" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition duration-150">
-                        Chat
-                    </a>
-                    <div className="relative" ref={dropdownRef}>
-                        <button
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition duration-150"
-                        >
-                            More <ChevronDown className="h-4 w-4 ml-1" />
-                        </button>
-                        {isDropdownOpen && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 py-1">
-                                {morePages.map((page) => (
-                                    <a
-                                        key={page.href}
-                                        href={page.href}
-                                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                        onClick={() => setIsDropdownOpen(false)}
+        // Apply dynamic background/text colors via CSS variables
+        <header 
+            style={{ backgroundColor: 'var(--color-header-bg)', color: 'var(--color-header-text)' }} 
+            className="p-4 shadow-md transition duration-300"
+        >
+            <div className="container mx-auto flex justify-between items-center">
+                
+                {/* Logo / App Name */}
+                <Link 
+                    to="/" 
+                    className="text-2xl font-serif font-bold tracking-wide" 
+                    style={{ color: 'var(--color-header-text)' }}
+                >
+                    Clarity Coach
+                </Link>
+                
+                {/* Navigation and Theme Toggle */}
+                <nav className="flex items-center space-x-6">
+                    <ul className="flex space-x-6">
+                        {navItems.map((item) => (
+                            <li key={item.name}>
+                                {/* Use <a> for external link, Link for internal */}
+                                {item.url.startsWith('http') ? (
+                                    <a 
+                                        href={item.url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="text-lg font-sans transition duration-200 hover:text-[color:var(--gold-accent)]"
+                                        style={{ color: 'var(--color-header-text)' }}
                                     >
-                                        {page.label}
+                                        {item.name}
                                     </a>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-150 focus:outline-none"
-                        aria-label="Toggle light and dark mode" // --- FIX #2 ---
-                    >
-                        {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                    </button>
-                </div>
-            </nav>
+                                ) : (
+                                    <Link 
+                                        to={item.url}
+                                        className="text-lg font-sans transition duration-200 hover:text-[color:var(--gold-accent)]"
+                                        style={{ color: 'var(--color-header-text)' }}
+                                    >
+                                        {item.name}
+                                    </Link>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                    
+                    {/* Theme Toggle Button */}
+                    <ThemeToggle /> 
+                </nav>
+            </div>
         </header>
     );
 };
+
+export default Header;
