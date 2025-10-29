@@ -1,12 +1,9 @@
+// vite.config.js in the Clarity Coach App project (Repo B)
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  // --- ADD THIS SECTION ---
-  define: {
-    'import.meta.env.VITE_APP_VERSION': JSON.stringify(process.env.npm_package_version)
-  },
-  // --- END SECTION ---
   plugins: [react()],
+  // Change from '/apps/clarity/' to './' (relative path)
+  base: './', 
 })
