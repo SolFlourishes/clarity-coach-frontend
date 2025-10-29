@@ -4,6 +4,6 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  // Set the absolute path for asset resolution 
-  base: '/apps/clarity/', 
+  // Set to relative path so Vercel can find assets at its own root
+  base: './', 
 })
