@@ -4,6 +4,6 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  // Change from '/apps/clarity/' to './' (relative path)
-  base: './', 
+  // Set the absolute path for asset resolution 
+  base: '/apps/clarity/', 
 })
